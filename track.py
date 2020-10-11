@@ -1,5 +1,6 @@
 from datetime import date
 from pathlib import Path
+import re
 import sys
 
 # Constants
@@ -16,6 +17,9 @@ FP = str(Path.home()) + '/.track'
 def cls():
     """Clear screen with 40 blank lines."""
     print('\n'*40)
+
+def load_data():
+    return open(FP, 'r').read()
 
 
 # Modules
@@ -122,20 +126,19 @@ def record_entry(entry: str):
         f.write(entry)
     print('Entry recorded.')
 
-# def init_journal():
-#     """Create new journal file in root."""
-#     if os.path.exists(FP) == False:
-#         with open(FP, 'w') as f:
-#             f.write('')
-#         print('')
-#         print(f'Journal created at:\n{FP}')
-#     else:
-#         print('')
-#         print(f'A journal already exists at:\n{FP}')
+def get_mit(data: str):
+    """Show MIT from last tracked data."""
+    # pull most recent data
+    pattern = re.compile('(---\n\d{8}.*> )(?!.*---\n\d{8}.*> )', re.DOTALL)
+    last_data = re.search(pattern, data)
 
-def show_mit():
-    # show mit set on previous day
-    pass
+    # get MIT start and end
+    mit_start = last_data.end()
+    last_mit = data[mit_start:]
+    last_mit = last_mit.split('\n')[0]
+
+    # return MIT
+    return last_mit
 
 def avg_mood():
     # pull all mood data
@@ -152,6 +155,7 @@ def get_accs():
 
 def get_overviews():
     # pull all headers and return on screen
+
     pass
 
 if __name__ == "__main__":
@@ -162,7 +166,11 @@ if __name__ == "__main__":
         cls()
         record_entry(entry)
     else:
+        option = sys.argv[1]
+        data = load_data()
         # go through options
-        # elif option == 'init':
-        #     init_journal()
+        if option == 'mit':
+            cls()
+            last_mit = get_mit(data)
+            print(f'\n> {last_mit}\n')
         pass
