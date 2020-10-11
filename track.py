@@ -26,7 +26,7 @@ def load_data():
 
 # Main Functions
 def user_entry():
-    """Record entries from user."""
+    """Record entry data from user."""
     cls()
 
     # mood
@@ -74,7 +74,7 @@ def user_entry():
     return entry_dic
 
 def make_entry(dic: dict):
-    """Format entry for writing to file."""
+    """Return formatted entry."""
     mood = dic.get('mood')
     accs = dic.get('accomplishments')
     mit = dic.get('mit')
@@ -123,7 +123,7 @@ def make_entry(dic: dict):
     return entry
 
 def record_entry(entry: str):
-    """Record entry into file."""
+    """Record entry into tracking file."""
     with open(FP, 'a') as f:
         f.write(entry)
     print('Entry recorded.')
@@ -131,7 +131,7 @@ def record_entry(entry: str):
 
 # Options
 def get_mit(data: str):
-    """Show MIT from last tracked data."""
+    """Return MIT from last tracked data."""
     # pull most recent data
     pattern = re.compile('(---\n\d{8}.*> )(?!.*---\n\d{8}.*> )', re.DOTALL)
     last_data = re.search(pattern, data)
@@ -153,13 +153,13 @@ def avg_mood():
     pass
 
 def get_accs(data):
-    # pull all accs and return them on screen
+    """Return recent accomplishments."""
     pattern = re.compile('(?<=\n)\* .*')
     matches = re.findall(pattern, data)
     return(matches[:TERMINAL_HEIGHT-2])
 
 def get_overviews(data):
-    # pull all headers and return on screen
+    """Return recent entry overviews."""
     pattern = re.compile('\d{8} \(\d\) .*')
     matches = re.findall(pattern, data)
     return(matches[:TERMINAL_HEIGHT-2])
