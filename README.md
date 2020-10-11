@@ -29,7 +29,8 @@ This will save this data into a file named `.track` in your root folder, formatt
 
 > Prepare for next week and resolve all open tasks
 
-I walked farther south than I have since moving here, and I really like how quiet the side streets are.
+I walked farther south than I have since moving here, and I really like how quiet
+the side streets are.
 
 Been listening to vogue ball playlists all night.
 
