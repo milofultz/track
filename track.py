@@ -99,10 +99,10 @@ def make_entry(dic: dict):
             edge = 75
             while line[edge] not in BREAKPOINTS:
                 edge -= 1
-            long_journal += line[0:edge]
+            long_journal += line[0:edge].strip()
             line = line[edge:]
             long_journal += '\n'
-        long_journal += line
+        long_journal += line.strip()
         long_journal += '\n\n'
 
     # organize whole string
@@ -113,7 +113,7 @@ def make_entry(dic: dict):
              blank_line + '\n' +
              mit_line + '\n' +
              blank_line + '\n' +
-             long_journal)
+             long_journal + '\n')
     return entry
 
 def record_entry(entry: str):
