@@ -1,6 +1,7 @@
 from datetime import date
 from pathlib import Path
 import re
+from shutil import get_terminal_size
 import sys
 
 # Constants
@@ -11,6 +12,7 @@ BREAKPOINTS = {
     '?'
 }
 FP = str(Path.home()) + '/.track'
+TERMINAL_HEIGHT = get_terminal_size()[1]
 
 
 # Utilities
@@ -153,10 +155,11 @@ def get_accs():
     # pull all accs and return them on screen
     pass
 
-def get_overviews():
+def get_overviews(data):
     # pull all headers and return on screen
-
-    pass
+    pattern = re.compile('\d{8} \(\d\) .*')
+    matches = re.findall(pattern, data)
+    return(matches[:TERMINAL_HEIGHT-2])
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
@@ -173,4 +176,9 @@ if __name__ == "__main__":
             cls()
             last_mit = get_mit(data)
             print(f'\n> {last_mit}\n')
+        elif option == 'overview':
+            cls()
+            overview_list = get_overviews(data)
+            print('\n'.join(line for line in overview_list),
+                  '\n')
         pass

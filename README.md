@@ -39,13 +39,14 @@ Been listening to vogue ball playlists all night.
 ##### With options:
 
 * `mit` - Print last recorded most important task.
+* `overview` - Print headers of all recent entries.
 
 ### Future Implementation
 
 * Using options:
     * Return all accomplishments.
     * Show average mood over short- and long-term scale.
-    * Return all headers in a list.
+    * ~~Return all headers in a list.~~
     * ~~Return yesterday's MIT.~~
     * Pull up random journal entry.
 * Eventually maybe turn this into some kind of simple MERN app for practice.
