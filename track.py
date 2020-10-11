@@ -101,6 +101,7 @@ def make_entry(dic: dict):
                 edge -= 1
             long_journal += line[0:edge]
             line = line[edge:]
+            long_journal += '\n'
         long_journal += line
         long_journal += '\n\n'
 
