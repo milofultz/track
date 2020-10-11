@@ -20,6 +20,7 @@ def cls():
     """Clear screen with 40 blank lines."""
     print('\n'*40)
 
+
 def load_data():
     return open(FP, 'r').read()
 
@@ -38,21 +39,24 @@ def user_entry():
     while True:
         new_acc = input('-> ')
         # if blank entry, move on
-        if new_acc != '': accomplishments.append(new_acc)
-        else: break
+        if new_acc != '':
+            accomplishments.append(new_acc)
+        else:
+            break
 
     # MIT for tomorrow
     print("Tomorrow's most important task: ")
     mit = input('-> ')
 
     # short journal (50 chr)
-    print('Summmarize your day in less than 50 characters:     |')
+    print('Summarize your day in less than 50 characters:      |')
     while True:
         short_journal = input('-> ')
         if len(short_journal) > 50:
             print('Please write less than 50 characters. Try: ')
             print(short_journal[0:50])
-        else: break
+        else:
+            break
     cls()
 
     # long journal
@@ -61,17 +65,20 @@ def user_entry():
     while True:
         paragraph = input('-> ')
         # if blank entry, move on
-        if paragraph != '': long_journal.append(paragraph)
-        else: break
+        if paragraph != '':
+            long_journal.append(paragraph)
+        else:
+            break
 
-    entry_dic = {
+    entries = {
         "mood": mood,
         "accomplishments": accomplishments,
         "mit": mit,
         "short_journal": short_journal,
         "long_journal": long_journal
     }
-    return entry_dic
+    return entries
+
 
 def make_entry(dic: dict):
     """Return formatted entry."""
@@ -93,8 +100,10 @@ def make_entry(dic: dict):
     acc_lines = ''
     for index, acc in enumerate(accs):
         acc_lines += f"* {acc}"
-        if index + 1 != len(accs): acc_lines += '\n'
-        else: pass
+        if index + 1 != len(accs):
+            acc_lines += '\n'
+        else:
+            pass
     mit_line = f"> {mit}"
 
     # format long journal
@@ -112,36 +121,38 @@ def make_entry(dic: dict):
         long_journal += '\n\n'
 
     # organize whole string
-    entry = (delimiter + '\n' +
-             top_line + '\n' +
-             blank_line + '\n' +
-             acc_lines + '\n' +
-             blank_line + '\n' +
-             mit_line + '\n' +
-             blank_line + '\n' +
-             long_journal + '\n')
-    return entry
+    formatted_entry = (delimiter + '\n' +
+                       top_line + '\n' +
+                       blank_line + '\n' +
+                       acc_lines + '\n' +
+                       blank_line + '\n' +
+                       mit_line + '\n' +
+                       blank_line + '\n' +
+                       long_journal + '\n')
+    return formatted_entry
 
-def record_entry(entry: str):
+
+def record_entry(new_data: str):
     """Record entry into tracking file."""
     with open(FP, 'a') as f:
-        f.write(entry)
+        f.write(new_data)
     print('Entry recorded.')
 
 
 # Options
-def get_mit(data: str):
+def get_mit(entries: str):
     """Return MIT from last tracked data."""
     # pull most recent data
     pattern = re.compile('(---\n\d{8}.*> )(?!.*---\n\d{8}.*> )', re.DOTALL)
-    last_data = re.search(pattern, data)
+    last_data = re.search(pattern, entries)
 
     # get MIT start and end
     mit_start = last_data.end()
-    last_mit = data[mit_start:]
+    last_mit = entries[mit_start:]
     last_mit = last_mit.split('\n')[0]
 
     return last_mit
+
 
 def avg_mood():
     # pull all mood data
@@ -152,17 +163,20 @@ def avg_mood():
     #   all time avg
     pass
 
+
 def get_accs(data):
     """Return recent accomplishments."""
     pattern = re.compile('(?<=\n)\* .*')
     matches = re.findall(pattern, data)
-    return(matches[:TERMINAL_HEIGHT-2])
+    return matches[:TERMINAL_HEIGHT-2]
+
 
 def get_overviews(data):
     """Return recent entry overviews."""
     pattern = re.compile('\d{8} \(\d\) .*')
     matches = re.findall(pattern, data)
-    return(matches[:TERMINAL_HEIGHT-2])
+    return matches[:TERMINAL_HEIGHT-2]
+
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
@@ -177,8 +191,8 @@ if __name__ == "__main__":
         # go through options
         if option == 'mit':
             cls()
-            last_mit = get_mit(data)
-            print(f'\n> {last_mit}\n')
+            mit = get_mit(data)
+            print(f'\n> {mit}\n')
         elif option == 'overview':
             cls()
             overview_list = get_overviews(data)
