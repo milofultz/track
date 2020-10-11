@@ -38,13 +38,14 @@ Been listening to vogue ball playlists all night.
 
 ##### With options:
 
+* `accs` - Print accomplishments of most recent entries.
 * `mit` - Print last recorded most important task.
 * `overview` - Print headers of all recent entries.
 
 ### Future Implementation
 
 * Using options:
-    * Return all accomplishments.
+    * ~~Return all accomplishments.~~
     * Show average mood over short- and long-term scale.
     * ~~Return all headers in a list.~~
     * ~~Return yesterday's MIT.~~

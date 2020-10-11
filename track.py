@@ -24,7 +24,7 @@ def load_data():
     return open(FP, 'r').read()
 
 
-# Modules
+# Main Functions
 def user_entry():
     """Record entries from user."""
     cls()
@@ -128,6 +128,8 @@ def record_entry(entry: str):
         f.write(entry)
     print('Entry recorded.')
 
+
+# Options
 def get_mit(data: str):
     """Show MIT from last tracked data."""
     # pull most recent data
@@ -139,7 +141,6 @@ def get_mit(data: str):
     last_mit = data[mit_start:]
     last_mit = last_mit.split('\n')[0]
 
-    # return MIT
     return last_mit
 
 def avg_mood():
@@ -151,9 +152,11 @@ def avg_mood():
     #   all time avg
     pass
 
-def get_accs():
+def get_accs(data):
     # pull all accs and return them on screen
-    pass
+    pattern = re.compile('(?<=\n)\* .*')
+    matches = re.findall(pattern, data)
+    return(matches[:TERMINAL_HEIGHT-2])
 
 def get_overviews(data):
     # pull all headers and return on screen
@@ -180,5 +183,10 @@ if __name__ == "__main__":
             cls()
             overview_list = get_overviews(data)
             print('\n'.join(line for line in overview_list),
+                  '\n')
+        elif option == 'accs':
+            cls()
+            accs_list = get_accs(data)
+            print('\n'.join(line for line in accs_list),
                   '\n')
         pass
