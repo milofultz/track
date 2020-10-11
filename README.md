@@ -6,6 +6,8 @@ Inspo from [lon by dstn](https://github.com/0xdstn/lon).
 
 ### Usage
 
+##### No options:
+
 On prompting, input:
 
 1. Your mood on a 1-5 scale.
@@ -27,11 +29,16 @@ This will save this data into a file named `.track` in your root folder, formatt
 
 > Prepare for next week and resolve all open tasks
 
-I walked farther south than I have since moving here, and I really like how quiet the side streets are.
+I walked farther south than I have since moving here, and I really like how quiet
+the side streets are.
 
 Been listening to vogue ball playlists all night.
 
 ```
+
+##### With options:
+
+* `mit` - Print last recorded most important task.
 
 ### Future Implementation
 
@@ -39,7 +46,7 @@ Been listening to vogue ball playlists all night.
     * Return all accomplishments.
     * Show average mood over short- and long-term scale.
     * Return all headers in a list.
-    * Return yesterday's MIT.
+    * ~~Return yesterday's MIT.~~
     * Pull up random journal entry.
 * Eventually maybe turn this into some kind of simple MERN app for practice.
 * Graph mood rating over time using matplotlib.
