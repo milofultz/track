@@ -6,6 +6,10 @@ Inspo from [lon by dstn](https://github.com/0xdstn/lon).
 
 ### Usage
 
+To reduce the friction of using this every day, I made an alias in my terminal so I can just write `track` to bring up the program and use any options I want following it:
+
+`alias track="python '/Users/your-username/daily_tracker_directory/track.py'"`
+
 ##### No options:
 
 On prompting, input:
