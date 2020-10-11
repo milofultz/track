@@ -132,7 +132,7 @@ def get_mit():
 
     # get MIT start and end
     mit_start = last_data.end()
-    last_mit = track_file[mit_start:]
+    last_mit = track_data[mit_start:]
     last_mit = last_mit.split('\n')[0]
 
     # return MIT
@@ -166,6 +166,7 @@ if __name__ == "__main__":
         option = sys.argv[1]
         # go through options
         if option == 'mit':
+            cls()
             last_mit = get_mit()
             print(f'\n> {last_mit}\n')
         pass
