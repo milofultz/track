@@ -18,6 +18,9 @@ def cls():
     """Clear screen with 40 blank lines."""
     print('\n'*40)
 
+def load_data():
+    return open(FP, 'r').read()
+
 
 # Modules
 def user_entry():
@@ -123,16 +126,15 @@ def record_entry(entry: str):
         f.write(entry)
     print('Entry recorded.')
 
-def get_mit():
+def get_mit(data: str):
     """Show MIT from last tracked data."""
     # pull most recent data
-    track_data = open(FP, 'r').read()
     pattern = re.compile('(---\n\d{8}.*> )(?!.*---\n\d{8}.*> )', re.DOTALL)
-    last_data = re.search(pattern, track_data)
+    last_data = re.search(pattern, data)
 
     # get MIT start and end
     mit_start = last_data.end()
-    last_mit = track_data[mit_start:]
+    last_mit = data[mit_start:]
     last_mit = last_mit.split('\n')[0]
 
     # return MIT
@@ -153,6 +155,7 @@ def get_accs():
 
 def get_overviews():
     # pull all headers and return on screen
+
     pass
 
 if __name__ == "__main__":
@@ -164,9 +167,10 @@ if __name__ == "__main__":
         record_entry(entry)
     else:
         option = sys.argv[1]
+        data = load_data()
         # go through options
         if option == 'mit':
             cls()
-            last_mit = get_mit()
+            last_mit = get_mit(data)
             print(f'\n> {last_mit}\n')
         pass

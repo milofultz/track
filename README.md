@@ -6,6 +6,8 @@ Inspo from [lon by dstn](https://github.com/0xdstn/lon).
 
 ### Usage
 
+##### No options:
+
 On prompting, input:
 
 1. Your mood on a 1-5 scale.
@@ -33,13 +35,17 @@ Been listening to vogue ball playlists all night.
 
 ```
 
+##### With options:
+
+* `mit` - Print last recorded most important task.
+
 ### Future Implementation
 
 * Using options:
     * Return all accomplishments.
     * Show average mood over short- and long-term scale.
     * Return all headers in a list.
-    * Return yesterday's MIT.
+    * ~~Return yesterday's MIT.~~
     * Pull up random journal entry.
 * Eventually maybe turn this into some kind of simple MERN app for practice.
 * Graph mood rating over time using matplotlib.
