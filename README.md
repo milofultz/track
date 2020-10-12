@@ -10,7 +10,7 @@ To reduce the friction of using this every day, I made an alias in my terminal s
 
 `alias track="python '/Users/your-username/daily_tracker_directory/track.py'"`
 
-Take the above code and copy it into your `~/.bashrc` file. After completing this, run `source ~/.bashrc` for the new changes to be active.
+Take the above code and copy it into your `~/.bash_profile` file. After completing this, run `source ~/.bash_profile` for the new changes to be active.
 
 ##### No options:
 
