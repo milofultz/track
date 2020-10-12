@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime, timedelta
 from pathlib import Path
 import re
 from shutil import get_terminal_size
@@ -91,11 +91,13 @@ def make_entry(dic: dict):
     # format top lines
     delimiter = '---'
     blank_line = ''
-    # make it so it reads as the day before up until 3am the next day
-    # get date as YYYYMMDD
-    today = date.today()
-    today = today.strftime("%Y%m%d")
-    top_line = f"{today} ({mood}) {sj}"
+    # if tracked between midnight and 3am, use prior day's date
+    now = datetime.now()
+    if int(now.strftime('%-H')) < 4:
+    	now = now - timedelta(days=1)
+	# get date as YYYYMMDD
+    day = now.strftime("%Y%m%d")
+    top_line = f"{day} ({mood}) {sj}"
 
     # format accomplishments
     acc_lines = ''

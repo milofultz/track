@@ -17,7 +17,7 @@ Take the above code and copy it into your `~/.bash_profile` file. After completi
 On prompting, input:
 
 1. Your mood on a 1-5 scale.
-1. Your accomplishments for the day.When finished, leave the line blank and press enter.
+1. Your accomplishments for the day. When finished, leave the line blank and press enter.
 1. Your most important task for the next day.
 1. A 50 character or less summary of your day.
 1. A longer journal entry of anything you feel is relevant.
