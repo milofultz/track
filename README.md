@@ -46,6 +46,7 @@ Been listening to vogue ball playlists all night.
 
 * `accs` - Print accomplishments of most recent entries.
 * `mit` - Print last recorded most important task.
+* `mit done` - Append ` (Completed)` to MIT in `.track` file
 * `overview` - Print headers of all recent entries.
 
 ### Future Implementation
