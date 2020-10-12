@@ -91,6 +91,7 @@ def make_entry(dic: dict):
     # format top lines
     delimiter = '---'
     blank_line = ''
+    # make it so it reads as the day before up until 3am the next day
     # get date as YYYYMMDD
     today = date.today()
     today = today.strftime("%Y%m%d")
