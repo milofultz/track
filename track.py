@@ -146,16 +146,29 @@ def record_entry(new_data: str):
 def get_mit(entries: str):
     """Return MIT from last tracked data."""
     # pull most recent data
-    pattern = re.compile('(---\n\d{8}.*> )(?!.*---\n\d{8}.*> )', re.DOTALL)
-    last_data = re.search(pattern, entries)
-
-    # get MIT start and end
-    mit_start = last_data.end()
-    last_mit = entries[mit_start:]
-    last_mit = last_mit.split('\n')[0]
+    last_data = entries.rsplit('\n> ', 1)
+    last_mit, endcap = last_data[1].split('\n', 1)
 
     return last_mit
 
+
+def complete_mit(entries: str, mit: str):
+    """Record entries with completed MIT."""
+    # get last whole entry
+    first_entries, last_entry = entries.rsplit('---', 1)
+    # replace MIT in last entry with completed entry
+    # check if already completed
+    split_entry = last_entry.split('\n')
+    for line in split_entry:
+        if '> ' in line and ' (Completed)' in line:
+            print('MIT already completed.\n')
+            return
+    last_entry = last_entry.replace(mit, mit + ' (Completed)')
+    updated_entries = first_entries + '---' + last_entry
+
+    with open(FP, 'w') as f:
+        f.write(updated_entries)
+        print('Entry updated.\n')
 
 def avg_mood():
     # pull all mood data
@@ -195,7 +208,11 @@ if __name__ == "__main__":
         if option == 'mit':
             cls()
             mit = get_mit(data)
-            print(f'\n> {mit}\n')
+            if len(sys.argv) == 3 and sys.argv[2] == 'done':
+                complete_mit(data, mit)
+            else: 
+                print(f'\n> {mit}\n')
+
         elif option == 'overview':
             cls()
             overview_list = get_overviews(data)
