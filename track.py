@@ -4,7 +4,12 @@ import re
 from shutil import get_terminal_size
 import sys
 
+
 # Constants
+
+GREEN = "\033[92m"
+RED = "\033[91m"
+NORMAL = '\033[0m'
 BREAKPOINTS = {
     ' ',
     '.',
@@ -16,6 +21,7 @@ TERMINAL_HEIGHT = get_terminal_size()[1]
 
 
 # Utilities
+
 def cls():
     """Clear screen with 40 blank lines."""
     print('\n'*40)
@@ -30,10 +36,10 @@ def user_entry():
     """Record entry data from user."""
     cls()
 
-    # mood
+    # Mood
     mood = input('#: ')
 
-    # accomplishments
+    # Accomplishments
     accomplishments = []
     print('Write your accomplishments: ')
     while True:
@@ -44,11 +50,11 @@ def user_entry():
         else:
             break
 
-    # MIT for tomorrow
+    # MIT for Tomorrow
     print("Tomorrow's most important task: ")
     mit = input('-> ')
 
-    # short journal (50 chr)
+    # Short Journal (50 chr)
     print('Summarize your day in less than 50 characters:      |')
     while True:
         short_journal = input('-> ')
@@ -59,9 +65,9 @@ def user_entry():
             break
     cls()
 
-    # long journal
+    # Long Journal
     long_journal = []
-    print('Write your long journal entry: ')
+    print('Write your long journal entry:')
     while True:
         paragraph = input('-> ')
         # if blank entry, move on
@@ -88,18 +94,15 @@ def make_entry(dic: dict):
     sj = dic.get('short_journal')
     lj = dic.get('long_journal')
 
-    # format top lines
     delimiter = '---'
     blank_line = ''
     # if tracked between midnight and 3am, use prior day's date
     now = datetime.now()
     if int(now.strftime('%-H')) < 4:
     	now = now - timedelta(days=1)
-	# get date as YYYYMMDD
     day = now.strftime("%Y%m%d")
     top_line = f"{day} ({mood}) {sj}"
 
-    # format accomplishments
     acc_lines = ''
     for index, acc in enumerate(accs):
         acc_lines += f"* {acc}"
@@ -107,9 +110,9 @@ def make_entry(dic: dict):
             acc_lines += '\n'
         else:
             pass
+
     mit_line = f"> {mit}"
 
-    # format long journal
     long_journal = ''
     for index, paragraph in enumerate(lj):
         line = paragraph
@@ -123,7 +126,6 @@ def make_entry(dic: dict):
         long_journal += line.strip()
         long_journal += '\n\n'
 
-    # organize whole string
     formatted_entry = (delimiter + '\n' +
                        top_line + '\n' +
                        blank_line + '\n' +
@@ -132,20 +134,21 @@ def make_entry(dic: dict):
                        mit_line + '\n' +
                        blank_line + '\n' +
                        long_journal + '\n')
+
     return formatted_entry
 
 
 def record_entry(new_data: str):
-    """Record entry into tracking file."""
+    """Append entry to tracking file."""
     with open(FP, 'a') as f:
         f.write(new_data)
     print('Entry recorded.')
 
 
 # Options
+
 def get_mit(entries: str):
     """Return MIT from last tracked data."""
-    # pull most recent data
     last_data = entries.rsplit('\n> ', 1)
     last_mit, endcap = last_data[1].split('\n', 1)
 
@@ -153,13 +156,11 @@ def get_mit(entries: str):
 
 
 def complete_mit(entries: str, mit: str):
-    """Record entries with completed MIT."""
-    # get last whole entry
+    """Update entries with completed MIT."""    
     first_entries, last_entry = entries.rsplit('---', 1)
-    # replace MIT in last entry with completed entry
-    # check if already completed
     split_entry = last_entry.split('\n')
     for line in split_entry:
+        # check if already completed
         if '> ' in line and ' (Completed)' in line:
             print('MIT already completed.\n')
             return
@@ -170,20 +171,68 @@ def complete_mit(entries: str, mit: str):
         f.write(updated_entries)
         print('Entry updated.\n')
 
-def avg_mood():
-    # pull all mood data
-    # using dates return
-    #   1w avg
-    #   1m avg
-    #   1y avg
-    #   all time avg
-    pass
+def avg_mood(entries: str):
+    """Return mood averages over time."""
+    pattern = re.compile('\d{8} \(\d\)') # find all dates and mood numbers
+    raw_data = pattern.findall(entries)
+    mood_arr = []
+    for item in raw_data:
+        date, mood = item.split() # parse data into tuples
+        mood_arr.append((date, mood[1]))
+    
+    start_date = mood_arr[0][0]
+    end_date = mood_arr[-1][0]
+    print(f'Using the data from {start_date} to {end_date}:\n')
+    
+    # 1w avg
+    week_avg = 0
+    day_count = 0
+    for date, mood in mood_arr[:-7:-1]:
+        week_avg += int(mood)
+        day_count += 1
+    week_avg = week_avg/day_count
+    color = GREEN if week_avg > 2 else RED
+    print('Your average mood over this week was ' + 
+          f'{GREEN}{week_avg}{NORMAL}.')
+    # 1m avg
+    if len(mood_arr) > 7:
+        month_avg = 0
+        day_count = 0
+        for date, mood in mood_arr[:-30:-1]:
+            month_avg += int(mood)
+            day_count += 1
+        month_avg = month_avg/day_count
+        color = GREEN if month_avg > 2 else RED
+        print('Your average mood over this month was ' + 
+              f'{GREEN}{month_avg}{NORMAL}.')
+    # 1y avg
+    if len(mood_arr) > 28:
+        year_avg = 0
+        day_count = 0
+        for date, mood in mood_arr[:-365:-1]:
+            month_avg += int(mood)
+            day_count += 1
+        year_avg = year_avg/day_count
+        color = GREEN if year_avg > 2 else RED
+        print('Your average mood over this month was ' +
+              f'{color}{year_avg}{NORMAL}.')
+    # all time avg
+    total_avg = 0
+    day_count = 0
+    for date, mood in mood_arr[:-7:-1]:
+        total_avg += int(mood)
+        day_count += 1
+    total_avg = total_avg/day_count
+    color = GREEN if total_avg > 2 else RED
+    print('Your average mood overall was ' + 
+          f'{GREEN}{total_avg}{NORMAL}.\n')
 
 
 def get_accs(data):
     """Return recent accomplishments."""
     pattern = re.compile('(?<=\n)\* .*')
     matches = re.findall(pattern, data)
+    
     return matches[:TERMINAL_HEIGHT-2]
 
 
@@ -191,12 +240,12 @@ def get_overviews(data):
     """Return recent entry overviews."""
     pattern = re.compile('\d{8} \(\d\) .*')
     matches = re.findall(pattern, data)
+    
     return matches[:TERMINAL_HEIGHT-2]
 
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
-        # check for file
         entry_dic = user_entry()
         entry = make_entry(entry_dic)
         cls()
@@ -204,13 +253,15 @@ if __name__ == "__main__":
     else:
         option = sys.argv[1]
         data = load_data()
-        # go through options
+
         if option == 'mit':
             cls()
             mit = get_mit(data)
             if len(sys.argv) == 3 and sys.argv[2] == 'done':
                 complete_mit(data, mit)
             else: 
+                if ' (Completed)' in mit:
+                    mit = mit[:-12] + GREEN + mit[-12:] + NORMAL
                 print(f'\n> {mit}\n')
 
         elif option == 'overview':
@@ -218,9 +269,15 @@ if __name__ == "__main__":
             overview_list = get_overviews(data)
             print('\n'.join(line for line in overview_list),
                   '\n')
+        
         elif option == 'accs':
             cls()
             accs_list = get_accs(data)
             print('\n'.join(line for line in accs_list),
                   '\n')
+        
+        elif option == 'mood':
+            cls()
+            avg_mood(data)
+        
         pass
