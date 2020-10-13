@@ -259,6 +259,8 @@ def show_help():
           '  * Short Daily Summary\n' +
           '  * Long Journal Entry\n' +
           '\n' +
+          'Usage: track.py [options]\n'
+          '\n' +
           'Options:\n' +
           '  [none]      Input and record daily tracking\n' +
           '  accs        Print all recent accomplishments\n' +
