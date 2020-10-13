@@ -45,6 +45,7 @@ Been listening to vogue ball playlists all night.
 ##### With options:
 
 * `accs` - Print accomplishments of most recent entries.
+* `help` - Print help for program.
 * `mit` - Print last recorded most important task.
 * `mit done` - Append ` (Completed)` to MIT in `.track` file
 * `mood` - Print average mood using past entries.
