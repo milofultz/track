@@ -292,7 +292,16 @@ if __name__ == "__main__":
             show_help()
             sys.exit()
 
-        if option == 'mit':
+        if option == 'accs':
+            cls()
+            accs_list = get_accs(data)
+            print('\n'.join(line for line in accs_list),
+                  '\n')
+
+        elif option in ['help', 'info']:
+            show_help()
+
+        elif option == 'mit':
             cls()
             mit = get_mit(data)
             if len(sys.argv) == 3 and sys.argv[2] == 'done':
@@ -311,22 +320,14 @@ if __name__ == "__main__":
             print('\n'.join(line for line in mits),
                   '\n')
 
+        elif option == 'mood':
+            cls()
+            avg_mood(data)
+
         elif option == 'overview':
             cls()
             overviews = get_overviews(data)
             print('\n'.join(line for line in overviews),
                   '\n')
-        
-        elif option == 'accs':
-            cls()
-            accs_list = get_accs(data)
-            print('\n'.join(line for line in accs_list),
-                  '\n')
-        
-        elif option == 'mood':
-            cls()
-            avg_mood(data)
-        
-        elif option in ['help', 'info']:
-            show_help()
+
         pass
