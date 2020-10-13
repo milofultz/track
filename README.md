@@ -44,6 +44,7 @@ Been listening to vogue ball playlists all night.
 
 ##### With options:
 
+* `!` - Print random daily entry.
 * `accs` - Print accomplishments of most recent entries.
 * `help` - Print help for program.
 * `mit` - Print last recorded most important task.
@@ -54,11 +55,11 @@ Been listening to vogue ball playlists all night.
 
 ### Future Implementation
 
-* Using options:
+* ~~Using options:~~
     * ~~Return all accomplishments.~~
     * ~~Show average mood over short- and long-term scale.~~
     * ~~Return all headers in a list.~~
     * ~~Return yesterday's MIT.~~
-    * Pull up random journal entry.
+    * ~~Pull up random journal entry.~~
 * Eventually maybe turn this into some kind of simple MERN app for practice.
 * Graph mood rating over time using matplotlib.
