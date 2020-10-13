@@ -296,7 +296,8 @@ if __name__ == "__main__":
         if option == '!':
             cls()
             entries = data.split('---')[1:]
-            print('\n' + random.choice(entries) + '\n')
+            entry = random.choice(entries).strip()
+            print('\n' + entry + '\n')
 
         elif option == 'accs':
             cls()
