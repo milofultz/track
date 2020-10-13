@@ -28,7 +28,13 @@ def cls():
 
 
 def load_data():
-    return open(FP, 'r').read()
+    try:
+        with open(FP, 'r') as f:
+            data = f.read()
+        return data
+    except:
+        print('No file found.')
+        return None
 
 
 # Main Functions
@@ -244,6 +250,25 @@ def get_overviews(data):
     return matches[:TERMINAL_HEIGHT-2]
 
 
+def show_help():
+    print('\n' +
+          'track: Input info for daily tracking:\n'
+          '  * Mood\n' +
+          '  * Accomplishments\n' +
+          "  * Tomorrow's Most Important Task\n" +
+          '  * Short Daily Summary\n' +
+          '  * Long Journal Entry\n' +
+          '\n' +
+          'Options:\n' +
+          '  [none]      Input and record daily tracking\n' +
+          '  accs        Print all recent accomplishments\n' +
+          '  help        Print this help menu\n' +
+          '  mit         Print last recorded MIT\n' +
+          '  mit done    Record last MIT as completed\n' +
+          '  mood        Print average mood over time\n' +
+          '  overview    Print all recent daily summaries\n')
+
+
 if __name__ == "__main__":
     if len(sys.argv) == 1:
         entry_dic = user_entry()
@@ -253,6 +278,9 @@ if __name__ == "__main__":
     else:
         option = sys.argv[1]
         data = load_data()
+        if not data: 
+            show_help()
+            sys.exit()
 
         if option == 'mit':
             cls()
@@ -280,4 +308,6 @@ if __name__ == "__main__":
             cls()
             avg_mood(data)
         
+        elif option in ['help', 'info']:
+            show_help()
         pass
