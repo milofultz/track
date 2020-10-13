@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from pathlib import Path
+import random
 import re
 from shutil import get_terminal_size
 import sys
@@ -292,7 +293,12 @@ if __name__ == "__main__":
             show_help()
             sys.exit()
 
-        if option == 'accs':
+        if option == '!':
+            cls()
+            entries = data.split('---')[1:]
+            print('\n' + random.choice(entries) + '\n')
+
+        elif option == 'accs':
             cls()
             accs_list = get_accs(data)
             print('\n'.join(line for line in accs_list),
