@@ -250,6 +250,14 @@ def get_overviews(data):
     return matches[:TERMINAL_HEIGHT-2]
 
 
+def get_mits(data):
+    """Return recent MITs."""
+    pattern = re.compile('(?<=\n)> .*')
+    matches = re.findall(pattern, data)
+
+    return matches[:TERMINAL_HEIGHT-2]
+
+
 def show_help():
     print('\n' +
           'track: Input info for daily tracking:\n'
@@ -294,10 +302,19 @@ if __name__ == "__main__":
                     mit = mit[:-12] + GREEN + mit[-12:] + NORMAL
                 print(f'\n> {mit}\n')
 
+        if option == 'mits':
+            cls()
+            mits = get_mits(data)
+            for index, mit in enumerate(mits):
+                if ' (Completed)' in mit:
+                    mits[index] = mit[:-12] + GREEN + mit[-12:] + NORMAL
+            print('\n'.join(line for line in mits),
+                  '\n')
+
         elif option == 'overview':
             cls()
-            overview_list = get_overviews(data)
-            print('\n'.join(line for line in overview_list),
+            overviews = get_overviews(data)
+            print('\n'.join(line for line in overviews),
                   '\n')
         
         elif option == 'accs':

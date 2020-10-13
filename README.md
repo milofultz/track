@@ -48,6 +48,7 @@ Been listening to vogue ball playlists all night.
 * `help` - Print help for program.
 * `mit` - Print last recorded most important task.
 * `mit done` - Append ` (Completed)` to MIT in `.track` file
+* `mits` - Print MITs of most recent entries.
 * `mood` - Print average mood using past entries.
 * `overview` - Print headers of all recent entries.
 
@@ -55,7 +56,7 @@ Been listening to vogue ball playlists all night.
 
 * Using options:
     * ~~Return all accomplishments.~~
-    * Show average mood over short- and long-term scale.
+    * ~~Show average mood over short- and long-term scale.~~
     * ~~Return all headers in a list.~~
     * ~~Return yesterday's MIT.~~
     * Pull up random journal entry.
