@@ -190,7 +190,7 @@ def avg_mood(entries: str):
     for date, mood in mood_arr[:-7:-1]:
         week_avg += int(mood)
         day_count += 1
-    week_avg = week_avg/day_count
+    week_avg = round(week_avg/day_count, 2)
     color = GREEN if week_avg > 2 else RED
     print('Your average mood over this week was ' + 
           f'{GREEN}{week_avg}{NORMAL}.')
@@ -201,7 +201,7 @@ def avg_mood(entries: str):
         for date, mood in mood_arr[:-30:-1]:
             month_avg += int(mood)
             day_count += 1
-        month_avg = month_avg/day_count
+        month_avg = round(month_avg/day_count, 2)
         color = GREEN if month_avg > 2 else RED
         print('Your average mood over this month was ' + 
               f'{GREEN}{month_avg}{NORMAL}.')
@@ -212,7 +212,7 @@ def avg_mood(entries: str):
         for date, mood in mood_arr[:-365:-1]:
             month_avg += int(mood)
             day_count += 1
-        year_avg = year_avg/day_count
+        year_avg = round(year_avg/day_count, 2)
         color = GREEN if year_avg > 2 else RED
         print('Your average mood over this month was ' +
               f'{color}{year_avg}{NORMAL}.')
@@ -222,7 +222,7 @@ def avg_mood(entries: str):
     for date, mood in mood_arr[:-7:-1]:
         total_avg += int(mood)
         day_count += 1
-    total_avg = total_avg/day_count
+    total_avg = round(total_avg/day_count, 2)
     color = GREEN if total_avg > 2 else RED
     print('Your average mood overall was ' + 
           f'{GREEN}{total_avg}{NORMAL}.\n')
