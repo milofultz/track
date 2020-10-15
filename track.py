@@ -29,6 +29,7 @@ def cls():
 
 
 def load_data():
+    """Return entries as a string."""
     try:
         with open(FP, 'r') as f:
             data = f.read()
@@ -38,10 +39,32 @@ def load_data():
         return None
 
 
+def show_help():
+    """Print help to screen."""
+    print('\n' +
+          'track: Input info for daily tracking:\n'
+          '  * Mood\n' +
+          '  * Accomplishments\n' +
+          "  * Tomorrow's Most Important Task\n" +
+          '  * Short Daily Summary\n' +
+          '  * Long Journal Entry\n' +
+          '\n' +
+          'Usage: track.py [options]\n'
+          '\n' +
+          'Options:\n' +
+          '  [none]      Input and record daily tracking\n' +
+          '  accs        Print all recent accomplishments\n' +
+          '  help        Print this help menu\n' +
+          '  mit         Print last recorded MIT\n' +
+          '  mit done    Record last MIT as completed\n' +
+          '  mood        Print average mood over time\n' +
+          '  overview    Print all recent daily summaries\n')
+
+
 # Main Functions
+
 def user_entry():
     """Record entry data from user."""
-    cls()
 
     # Mood
     mood = input('#: ')
@@ -93,7 +116,7 @@ def user_entry():
     return entries
 
 
-def make_entry(dic: dict):
+def make_entry(dic: dict, yesterday: bool = False):
     """Return formatted entry."""
     mood = dic.get('mood')
     accs = dic.get('accomplishments')
@@ -103,10 +126,10 @@ def make_entry(dic: dict):
 
     delimiter = '---'
     blank_line = ''
-    # if tracked between midnight and 3am, use prior day's date
+    # if between midnight and 3am or 'y' option used, use prior day's date
     now = datetime.now()
-    if int(now.strftime('%-H')) < 4:
-    	now = now - timedelta(days=1)
+    if yesterday or int(now.strftime('%-H')) < 4:
+        now = now - timedelta(days=1)
     day = now.strftime("%Y%m%d")
     top_line = f"{day} ({mood}) {sj}"
 
@@ -152,7 +175,26 @@ def record_entry(new_data: str):
     print('Entry recorded.')
 
 
+def track(yesterday: bool=False):
+    """Run whole tracking sequence."""
+    cls()
+    if yesterday:
+        print('Tracking for yesterday:\n')
+    entry_dic = user_entry()
+    entry = make_entry(entry_dic, yesterday)
+    cls()
+    record_entry(entry)
+
+
 # Options
+
+def get_accs(data):
+    """Return recent accomplishments."""
+    pattern = re.compile('(?<=\n)\* .*')
+    matches = re.findall(pattern, data)
+    
+    return matches[:TERMINAL_HEIGHT-2]
+
 
 def get_mit(entries: str):
     """Return MIT from last tracked data."""
@@ -160,6 +202,14 @@ def get_mit(entries: str):
     last_mit, endcap = last_data[1].split('\n', 1)
 
     return last_mit
+
+
+def get_mits(entries: str):
+    """Return recent MITs."""
+    pattern = re.compile('(?<=\n)> .*')
+    matches = re.findall(pattern, entries)
+
+    return matches[:TERMINAL_HEIGHT-2]
 
 
 def complete_mit(entries: str, mit: str):
@@ -177,6 +227,7 @@ def complete_mit(entries: str, mit: str):
     with open(FP, 'w') as f:
         f.write(updated_entries)
         print('Entry updated.\n')
+
 
 def avg_mood(entries: str):
     """Return mood averages over time."""
@@ -217,7 +268,7 @@ def avg_mood(entries: str):
         year_avg = 0
         day_count = 0
         for date, mood in mood_arr[:-365:-1]:
-            month_avg += int(mood)
+            year_avg += int(mood)
             day_count += 1
         year_avg = round(year_avg/day_count, 2)
         color = GREEN if year_avg > 2 else RED
@@ -235,14 +286,6 @@ def avg_mood(entries: str):
           f'{GREEN}{total_avg}{NORMAL}.\n')
 
 
-def get_accs(data):
-    """Return recent accomplishments."""
-    pattern = re.compile('(?<=\n)\* .*')
-    matches = re.findall(pattern, data)
-    
-    return matches[:TERMINAL_HEIGHT-2]
-
-
 def get_overviews(data):
     """Return recent entry overviews."""
     pattern = re.compile('\d{8} \(\d\) .*')
@@ -251,41 +294,10 @@ def get_overviews(data):
     return matches[:TERMINAL_HEIGHT-2]
 
 
-def get_mits(data):
-    """Return recent MITs."""
-    pattern = re.compile('(?<=\n)> .*')
-    matches = re.findall(pattern, data)
-
-    return matches[:TERMINAL_HEIGHT-2]
-
-
-def show_help():
-    print('\n' +
-          'track: Input info for daily tracking:\n'
-          '  * Mood\n' +
-          '  * Accomplishments\n' +
-          "  * Tomorrow's Most Important Task\n" +
-          '  * Short Daily Summary\n' +
-          '  * Long Journal Entry\n' +
-          '\n' +
-          'Usage: track.py [options]\n'
-          '\n' +
-          'Options:\n' +
-          '  [none]      Input and record daily tracking\n' +
-          '  accs        Print all recent accomplishments\n' +
-          '  help        Print this help menu\n' +
-          '  mit         Print last recorded MIT\n' +
-          '  mit done    Record last MIT as completed\n' +
-          '  mood        Print average mood over time\n' +
-          '  overview    Print all recent daily summaries\n')
-
-
 if __name__ == "__main__":
-    if len(sys.argv) == 1 or re.match('\d{8}', option):
-        entry_dic = user_entry()
-        entry = make_entry(entry_dic)
-        cls()
-        record_entry(entry)
+    if len(sys.argv) == 1:
+        track()
+
     else:
         option = sys.argv[1]
         data = load_data()
@@ -336,5 +348,8 @@ if __name__ == "__main__":
             overviews = get_overviews(data)
             print('\n'.join(line for line in overviews),
                   '\n')
+
+        elif option == 'y':
+            track(yesterday=True)
 
         pass

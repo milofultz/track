@@ -52,6 +52,7 @@ Been listening to vogue ball playlists all night.
 * `mits` - Print MITs of most recent entries.
 * `mood` - Print average mood using past entries.
 * `overview` - Print headers of all recent entries.
+* `y` - Record tracking for previous day (if you forget the night before). 
 
 ### Future Implementation
 
