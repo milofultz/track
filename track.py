@@ -281,7 +281,7 @@ def show_help():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
+    if len(sys.argv) == 1 or re.match('\d{8}', option):
         entry_dic = user_entry()
         entry = make_entry(entry_dic)
         cls()
