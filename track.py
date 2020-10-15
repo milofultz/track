@@ -192,7 +192,7 @@ def get_accs(data):
     """Return recent accomplishments."""
     pattern = re.compile('(?<=\n)\* .*')
     matches = re.findall(pattern, data)
-    
+
     return matches[:TERMINAL_HEIGHT-2]
 
 
@@ -213,7 +213,7 @@ def get_mits(entries: str):
 
 
 def complete_mit(entries: str, mit: str):
-    """Update entries with completed MIT."""    
+    """Update entries with completed MIT."""
     first_entries, last_entry = entries.rsplit('---', 1)
     split_entry = last_entry.split('\n')
     for line in split_entry:
@@ -243,7 +243,7 @@ def avg_mood(entries: str):
     end_date = datetime.strptime(mood_arr[-1][0], '%Y%m%d')
     end_date = end_date.strftime('%B %-d, %Y')
     print(f'Using the data from {start_date} to {end_date}:\n')
-    
+
     # get total time from first entry
     now = datetime.now()
     total_days = (now - datetime.strptime(mood_arr[0][0], '%Y%m%d')).days
@@ -258,7 +258,7 @@ def avg_mood(entries: str):
             day_count += 1
     week_avg = round(week_avg/day_count, 2)
     color = GREEN if week_avg > 2 else RED
-    print('Your average mood over this week was ' + 
+    print('Your average mood over this week was ' +
           f'{color}{week_avg}{NORMAL}.')
 
     # 1m avg
@@ -272,7 +272,7 @@ def avg_mood(entries: str):
                 day_count += 1
         month_avg = round(month_avg/day_count, 2)
         color = GREEN if month_avg > 2 else RED
-        print('Your average mood over this month was ' + 
+        print('Your average mood over this month was ' +
               f'{color}{month_avg}{NORMAL}.')
 
     # 1y avg
@@ -297,7 +297,7 @@ def avg_mood(entries: str):
         day_count += 1
     total_avg = round(total_avg/day_count, 2)
     color = GREEN if total_avg > 2 else RED
-    print('Your average mood overall was ' + 
+    print('Your average mood overall was ' +
           f'{color}{total_avg}{NORMAL}.\n')
 
 
@@ -305,7 +305,7 @@ def get_overviews(data):
     """Return recent entry overviews."""
     pattern = re.compile('\d{8} \(\d\) .*')
     matches = re.findall(pattern, data)
-    
+
     return matches[:TERMINAL_HEIGHT-2]
 
 
@@ -316,7 +316,7 @@ if __name__ == "__main__":
     else:
         option = sys.argv[1]
         data = load_data()
-        if not data: 
+        if not data:
             show_help()
             sys.exit()
 
@@ -340,7 +340,7 @@ if __name__ == "__main__":
             mit = get_mit(data)
             if len(sys.argv) == 3 and sys.argv[2] == 'done':
                 complete_mit(data, mit)
-            else: 
+            else:
                 if ' (Completed)' in mit:
                     mit = mit[:-12] + GREEN + mit[-12:] + NORMAL
                 print(f'\n> {mit}\n')
