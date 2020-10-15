@@ -237,53 +237,68 @@ def avg_mood(entries: str):
     for item in raw_data:
         date, mood = item.split() # parse data into tuples
         mood_arr.append((date, mood[1]))
-    
-    start_date = mood_arr[0][0]
-    end_date = mood_arr[-1][0]
+
+    start_date = datetime.strptime(mood_arr[0][0], '%Y%m%d')
+    start_date = start_date.strftime('%B %-d, %Y')
+    end_date = datetime.strptime(mood_arr[-1][0], '%Y%m%d')
+    end_date = end_date.strftime('%B %-d, %Y')
     print(f'Using the data from {start_date} to {end_date}:\n')
     
+    # get total time from first entry
+    now = datetime.now()
+    total_days = (now - datetime.strptime(mood_arr[0][0], '%Y%m%d')).days
+
     # 1w avg
     week_avg = 0
     day_count = 0
+    week_ago_date = now - timedelta(days=7)
     for date, mood in mood_arr[:-7:-1]:
-        week_avg += int(mood)
-        day_count += 1
+        if datetime.strptime(date, '%Y%m%d') > week_ago_date:
+            week_avg += int(mood)
+            day_count += 1
     week_avg = round(week_avg/day_count, 2)
     color = GREEN if week_avg > 2 else RED
     print('Your average mood over this week was ' + 
-          f'{GREEN}{week_avg}{NORMAL}.')
+          f'{color}{week_avg}{NORMAL}.')
+
     # 1m avg
-    if len(mood_arr) > 7:
+    if total_days > 28:
         month_avg = 0
         day_count = 0
-        for date, mood in mood_arr[:-30:-1]:
-            month_avg += int(mood)
-            day_count += 1
+        month_ago_date = now - timedelta(days=28)
+        for date, mood in mood_arr[:-28:-1]:
+            if datetime.strptime(date, '%Y%m%d') > month_ago_date:
+                month_avg += int(mood)
+                day_count += 1
         month_avg = round(month_avg/day_count, 2)
         color = GREEN if month_avg > 2 else RED
         print('Your average mood over this month was ' + 
-              f'{GREEN}{month_avg}{NORMAL}.')
+              f'{color}{month_avg}{NORMAL}.')
+
     # 1y avg
-    if len(mood_arr) > 28:
+    if total_days > 365:
         year_avg = 0
         day_count = 0
+        year_ago_date = now - timedelta(days=365)
         for date, mood in mood_arr[:-365:-1]:
-            year_avg += int(mood)
-            day_count += 1
+            if datetime.strptime(date, '%Y%m%d') > year_ago_date:
+                year_avg += int(mood)
+                day_count += 1
         year_avg = round(year_avg/day_count, 2)
         color = GREEN if year_avg > 2 else RED
         print('Your average mood over this month was ' +
               f'{color}{year_avg}{NORMAL}.')
+
     # all time avg
     total_avg = 0
     day_count = 0
-    for date, mood in mood_arr[:-7:-1]:
+    for date, mood in mood_arr:
         total_avg += int(mood)
         day_count += 1
     total_avg = round(total_avg/day_count, 2)
     color = GREEN if total_avg > 2 else RED
     print('Your average mood overall was ' + 
-          f'{GREEN}{total_avg}{NORMAL}.\n')
+          f'{color}{total_avg}{NORMAL}.\n')
 
 
 def get_overviews(data):
