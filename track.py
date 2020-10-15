@@ -69,6 +69,16 @@ def user_entry():
     # Mood
     mood = input('#: ')
 
+    # Short Journal (50 chr)
+    print('Summarize your day in less than 50 characters:      |')
+    while True:
+        short_journal = input('-> ')
+        if len(short_journal) > 50:
+            print('Please write less than 50 characters. Try: ')
+            print(short_journal[0:50])
+        else:
+            break
+
     # Accomplishments
     accomplishments = []
     print('Write your accomplishments: ')
@@ -80,21 +90,6 @@ def user_entry():
         else:
             break
 
-    # MIT for Tomorrow
-    print("Tomorrow's most important task: ")
-    mit = input('-> ')
-
-    # Short Journal (50 chr)
-    print('Summarize your day in less than 50 characters:      |')
-    while True:
-        short_journal = input('-> ')
-        if len(short_journal) > 50:
-            print('Please write less than 50 characters. Try: ')
-            print(short_journal[0:50])
-        else:
-            break
-    cls()
-
     # Long Journal
     long_journal = []
     print('Write your long journal entry:')
@@ -105,6 +100,10 @@ def user_entry():
             long_journal.append(paragraph)
         else:
             break
+
+    # MIT for Tomorrow
+    print("Tomorrow's most important task: ")
+    mit = input('-> ')
 
     entries = {
         "mood": mood,
