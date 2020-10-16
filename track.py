@@ -35,7 +35,7 @@ def load_data():
             data = f.read()
         return data
     except:
-        print('No file found.')
+        print(FP + ' file not found.')
         return None
 
 
@@ -44,30 +44,37 @@ def show_help():
     print('\n' +
           'track: Input info for daily tracking:\n'
           '  * Mood\n' +
-          '  * Accomplishments\n' +
-          "  * Tomorrow's Most Important Task\n" +
           '  * Short Daily Summary\n' +
+          '  * Accomplishments\n' +
           '  * Long Journal Entry\n' +
+          "  * Tomorrow's Most Important Task\n" +
           '\n' +
           'Usage: track.py [options]\n'
           '\n' +
           'Options:\n' +
           '  [none]      Input and record daily tracking\n' +
+          '  !           Print random daily entry\n' +
           '  accs        Print all recent accomplishments\n' +
           '  help        Print this help menu\n' +
           '  mit         Print last recorded MIT\n' +
           '  mit done    Record last MIT as completed\n' +
-          '  mood        Print average mood over time\n' +
-          '  overview    Print all recent daily summaries\n')
+          '  mits        Print MITs of most recent entries\n' +
+          '  mood        Print average mood using past entries\n' +
+          '  overviews   Print headers of all recent entries.\n' + 
+          '  y           Record tracking for previous day (if you forget the night before)\n')
 
 
 # Main Functions
 
 def user_entry():
     """Record entry data from user."""
-
     # Mood
-    mood = input('#: ')
+    while True:
+    	mood = input('#: ')
+    	if len(mood) > 1 or not mood.isdigit():
+    		print('Please enter a single digit number.')
+    	else: 
+    		break
 
     # Short Journal (50 chr)
     print('Summarize your day in less than 50 characters:      |')
@@ -104,6 +111,8 @@ def user_entry():
     # MIT for Tomorrow
     print("Tomorrow's most important task: ")
     mit = input('-> ')
+    if not mit:
+    	mit = 'No MIT recorded'
 
     entries = {
         "mood": mood,
@@ -192,7 +201,7 @@ def get_accs(data):
     pattern = re.compile('(?<=\n)\* .*')
     matches = re.findall(pattern, data)
 
-    return matches[:TERMINAL_HEIGHT-2]
+    return matches[-TERMINAL_HEIGHT+2:]
 
 
 def get_mit(entries: str):
@@ -208,24 +217,24 @@ def get_mits(entries: str):
     pattern = re.compile('(?<=\n)> .*')
     matches = re.findall(pattern, entries)
 
-    return matches[:TERMINAL_HEIGHT-2]
+    return matches[-TERMINAL_HEIGHT+2:]
 
 
 def complete_mit(entries: str, mit: str):
-    """Update entries with completed MIT."""
+    """Update entry with completed MIT."""
     first_entries, last_entry = entries.rsplit('---', 1)
     split_entry = last_entry.split('\n')
     for line in split_entry:
         # check if already completed
         if '> ' in line and ' (Completed)' in line:
-            print('MIT already completed.\n')
+            print('MIT already completed.')
             return
     last_entry = last_entry.replace(mit, mit + ' (Completed)')
     updated_entries = first_entries + '---' + last_entry
 
     with open(FP, 'w') as f:
         f.write(updated_entries)
-        print('Entry updated.\n')
+        print('Entry updated.')
 
 
 def avg_mood(entries: str):
@@ -305,7 +314,7 @@ def get_overviews(data):
     pattern = re.compile('\d{8} \(\d\) .*')
     matches = re.findall(pattern, data)
 
-    return matches[:TERMINAL_HEIGHT-2]
+    return matches[-TERMINAL_HEIGHT+2:]
 
 
 if __name__ == "__main__":
@@ -319,7 +328,8 @@ if __name__ == "__main__":
             show_help()
             sys.exit()
 
-        if option == '!':
+        # Return random entry
+        elif option == '!':
             cls()
             entries = data.split('---')[1:]
             entry = random.choice(entries).strip()
@@ -331,20 +341,19 @@ if __name__ == "__main__":
             print('\n'.join(line for line in accs_list),
                   '\n')
 
-        elif option in ['help', 'info']:
+        elif option in 'help':
             show_help()
 
         elif option == 'mit':
             cls()
             mit = get_mit(data)
-            if len(sys.argv) == 3 and sys.argv[2] == 'done':
+            if 'done' in sys.argv:
                 complete_mit(data, mit)
-            else:
-                if ' (Completed)' in mit:
-                    mit = mit[:-12] + GREEN + mit[-12:] + NORMAL
-                print(f'\n> {mit}\n')
+            if ' (Completed)' in mit:
+                mit = mit[:-12] + GREEN + mit[-12:] + NORMAL
+            print(f'\n> {mit}\n')
 
-        if option == 'mits':
+        elif option == 'mits':
             cls()
             mits = get_mits(data)
             for index, mit in enumerate(mits):
@@ -357,7 +366,7 @@ if __name__ == "__main__":
             cls()
             avg_mood(data)
 
-        elif option == 'overview':
+        elif option == 'overviews':
             cls()
             overviews = get_overviews(data)
             print('\n'.join(line for line in overviews),
@@ -366,4 +375,7 @@ if __name__ == "__main__":
         elif option == 'y':
             track(yesterday=True)
 
-        pass
+        else:
+        	options = " ".join(arg for arg in sys.argv[1:])
+        	print("Unknown option(s): " + options)
+        	print("Try `track help` for more information.")

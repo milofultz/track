@@ -51,7 +51,7 @@ Been listening to vogue ball playlists all night.
 * `mit done` - Append ` (Completed)` to MIT in `.track` file
 * `mits` - Print MITs of most recent entries.
 * `mood` - Print average mood using past entries.
-* `overview` - Print headers of all recent entries.
+* `overviews` - Print headers of all recent entries.
 * `y` - Record tracking for previous day (if you forget the night before). 
 
 ### Future Implementation
