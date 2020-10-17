@@ -5,8 +5,14 @@ from shutil import get_terminal_size
 # Constants
 
 class Colors:
-    GREEN = "\033[92m"
+    WHITE = "\033[97m"
     RED = "\033[91m"
+    YELLOW = "\033[93m"
+    GREEN = "\033[92m"
+    CYAN = "\033[96m"
+    BLUE = '\033[94m'
+    PURPLE = '\033[95m'
+    GREY = '\x1b[90m'
     NORMAL = '\033[0m'
 
 
@@ -51,17 +57,25 @@ def show_help():
           '  y           Record tracking for previous day (if you forget the night before)\n')
 
 
-def load_data(fp: str):
+def load_data(fp):
     """Return data as a string."""
     with open(fp, 'r') as f:
         data = f.read()
     return data
 
 
-def append_data(new_data: str, fp):
+def append_data(new_data, fp):
     """Append entry to tracking file."""
     with open(fp, 'a') as f:
         f.write(new_data)
+
+
+def save_data(data, fp):
+    if data:
+        with open(fp, 'w') as f:
+            f.write(data)
+    else:
+        print('No data provided.')
 
 
 def import_completed_tasks(data: str):
@@ -73,7 +87,7 @@ def import_completed_tasks(data: str):
         if task == '' or task[0] != '[' or task[1] != 'X':
             continue
         task_name = task[4:-7]
-        completed_tasks.append(f"{task_name}")
+        completed_tasks.append(f"* {task_name}")
 
     return completed_tasks
 

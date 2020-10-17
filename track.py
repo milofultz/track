@@ -3,10 +3,10 @@ import random
 import sys
 
 from options import (get_accs, get_mit, get_mits, get_overviews,
-                     complete_mit, avg_mood)
+                     paint, complete_mit, avg_mood)
 from utilities import (cls, show_help,
                        Colors, TERMINAL_HEIGHT,
-                       load_data, append_data,
+                       load_data, append_data, save_data,
                        import_completed_tasks,
                        format_entry)
 
@@ -23,36 +23,42 @@ def user_entry(imported_accs: list = None):
     """Record entry data from user."""
     # Mood
     while True:
-        mood = input('#: ')
+        mood = input(Colors.RED + '#' + Colors.NORMAL + ': ')
         if len(mood) > 1 or not mood.isdigit():
-            print('Please enter a single digit number.')
+            cls()
+            print(Colors.RED + 'Please enter a single digit number.' + Colors.NORMAL)
         else:
+            print()
             break
 
     # Short Journal (50 chr)
-    print('Summarize your day in less than 50 characters:      |')
+    print('Summarize your day in less than 50 characters:     ' +
+          Colors.WHITE + '▼' + Colors.NORMAL)
     while True:
-        short_journal = input('-> ')
+        short_journal = input(Colors.WHITE + '► ' + Colors.NORMAL)
         if len(short_journal) > 50:
-            print('Please write less than 50 characters. Try: ')
-            print(short_journal[0:50])
+            print(Colors.RED +
+                  'Please write less than 50 characters. Try:' +
+                  Colors.NORMAL)
+            print(Colors.WHITE + short_journal[0:50] + Colors.NORMAL)
         else:
+            print()
             break
 
     # Accomplishments
+    print('Write your accomplishments:\n')
+
     if imported_accs is not None:
-        accomplishments = imported_accs
+        accomplishments = paint(imported_accs)
     else:
         accomplishments = []
     if len(accomplishments) > 0:
-        print('')
-        print("Accomplishments from Tod:")
+        print(Colors.BLUE + "Accomplishments from Tod:" + Colors.NORMAL)
         for acc in imported_accs:
-            print(f"* {acc}")
-        print('')
-    print('Write your accomplishments: ')
+            print(acc)
+
     while True:
-        new_acc = input('-> ')
+        new_acc = input(Colors.CYAN + '* ' + Colors.NORMAL)
         # if blank entry, move on
         if new_acc != '':
             accomplishments.append(new_acc)
@@ -61,9 +67,9 @@ def user_entry(imported_accs: list = None):
 
     # Long Journal
     long_journal = []
-    print('Write your long journal entry:')
+    print('Write your long journal entry:\n')
     while True:
-        paragraph = input('-> ')
+        paragraph = input('  ')
         # if blank entry, move on
         if paragraph != '':
             long_journal.append(paragraph)
@@ -72,8 +78,8 @@ def user_entry(imported_accs: list = None):
 
     # MIT for Tomorrow
     print("Tomorrow's most important task: ")
-    mit = input('-> ')
-    if not mit:
+    mit = input(Colors.WHITE + '> ' + Colors.NORMAL)
+    if not mit or not mit.strip():
         mit = 'No MIT recorded'
 
     entries = {
@@ -90,7 +96,7 @@ def track(yesterday: bool = False):
     """Run whole tracking sequence."""
     cls()
     if yesterday:
-        print('Tracking for yesterday:\n')
+        print(Colors.YELLOW + 'Tracking for yesterday:\n' + Colors.NORMAL)
     try:
         tod_data = load_data(TOD_FP)
         tod_accs = import_completed_tasks(tod_data)
@@ -120,11 +126,15 @@ if __name__ == "__main__":
             cls()
             entries = data.split('---')[1:]
             entry = random.choice(entries).strip()
+            entry_lst = [line for line in entry.split('\n')]
+            entry_lst = paint(entry_lst)
+            entry = '\n'.join(line for line in entry_lst)
             print('\n' + entry + '\n')
 
         elif option == 'accs':
             cls()
             accs_list = get_accs(data)[-TERMINAL_HEIGHT+2:]
+            accs_list = paint(accs_list)
             print('\n'.join(line for line in accs_list),
                   '\n')
 
@@ -136,10 +146,11 @@ if __name__ == "__main__":
             mit = get_mit(data)
             if 'done' in sys.argv:
                 updated_entries = complete_mit(data, mit)
-                append_data(updated_entries, TRACK_FP)
+                save_data(updated_entries, TRACK_FP)
+                mit = mit + ' (Completed)'
                 print('Entry updated.')
-            if ' (Completed)' in mit:
-                mit = mit[:-12] + Colors.GREEN + mit[-12:] + Colors.NORMAL
+            if ' (Completed)' in mit or 'done' in sys.argv:
+                mit = paint(mit)
             print(f'\n> {mit}\n')
 
         elif option == 'mits':
@@ -147,7 +158,7 @@ if __name__ == "__main__":
             mits = get_mits(data)[-TERMINAL_HEIGHT+2:]
             for index, mit in enumerate(mits):
                 if ' (Completed)' in mit:
-                    mits[index] = mit[:-12] + Colors.GREEN + mit[-12:] + Colors.NORMAL
+                    mits = paint(mits)
             print('\n'.join(line for line in mits),
                   '\n')
 

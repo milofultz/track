@@ -14,12 +14,34 @@ def get_accs(data):
     return matches
 
 
+def paint(lst):
+    for i, line in enumerate(lst):
+        if not line:
+            continue
+        elif re.match('\d{8}', line[:8]):
+            lst[i] = (Colors.GREY + line[:8] +
+                      Colors.RED + line[8:13] +
+                      Colors.WHITE + line[13:])
+        elif line[0] == '*':
+            lst[i] = Colors.CYAN + line[0] + Colors.NORMAL + line[1:]
+        elif line[0] == '>':
+            if ' (Completed)' in line:
+                end = line[1:-12] + Colors.GREEN + line[-12:] + Colors.NORMAL
+            else:
+                end = line[1:]
+            lst[i] = Colors.WHITE + line[0] + Colors.NORMAL + end
+    return lst
+
+
+
 def get_mit(entries: str):
     """Return MIT from last tracked data."""
-    last_data = entries.rsplit('\n> ', 1)
-    last_mit, endcap = last_data[1].split('\n', 1)
-
-    return last_mit
+    if entries != '':
+        last_data = entries.rsplit('\n> ', 1)
+        last_mit, endcap = last_data[1].split('\n', 1)
+        return last_mit
+    else:
+        return 'No recent MIT found.'
 
 
 def get_mits(entries: str):
@@ -36,7 +58,8 @@ def complete_mit(entries: str, mit: str):
     split_entry = last_entry.split('\n')
     for line in split_entry:
         # check if already completed
-        if '> ' in line and ' (Completed)' in line:
+        if '> ' in line and (' (Completed)' in line or
+                             'No MIT recorded' in line):
             print('MIT already completed.')
             return
     last_entry = last_entry.replace(mit, mit + ' (Completed)')
