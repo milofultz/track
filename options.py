@@ -14,26 +14,6 @@ def get_accs(data):
     return matches
 
 
-def paint(lst):
-    for i, line in enumerate(lst):
-        if not line:
-            continue
-        elif re.match('\d{8}', line[:8]):
-            lst[i] = (Colors.GREY + line[:8] +
-                      Colors.RED + line[8:13] +
-                      Colors.WHITE + line[13:])
-        elif line[0] == '*':
-            lst[i] = Colors.CYAN + line[0] + Colors.NORMAL + line[1:]
-        elif line[0] == '>':
-            if ' (Completed)' in line:
-                end = line[1:-12] + Colors.GREEN + line[-12:] + Colors.NORMAL
-            else:
-                end = line[1:]
-            lst[i] = Colors.WHITE + line[0] + Colors.NORMAL + end
-    return lst
-
-
-
 def get_mit(entries: str):
     """Return MIT from last tracked data."""
     if entries != '':

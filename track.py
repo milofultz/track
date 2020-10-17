@@ -3,9 +3,9 @@ import random
 import sys
 
 from options import (get_accs, get_mit, get_mits, get_overviews,
-                     paint, complete_mit, avg_mood)
+                     complete_mit, avg_mood)
 from utilities import (cls, show_help,
-                       Colors, TERMINAL_HEIGHT,
+                       Colors, paint, TERMINAL_HEIGHT,
                        load_data, append_data, save_data,
                        import_completed_tasks,
                        format_entry)
