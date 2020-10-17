@@ -56,6 +56,7 @@ Been listening to vogue ball playlists all night.
 
 ### Future Implementation
 
+* Add Tod integration to README
 * ~~Using options:~~
     * ~~Return all accomplishments.~~
     * ~~Show average mood over short- and long-term scale.~~
