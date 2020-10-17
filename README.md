@@ -4,11 +4,16 @@ I wanted to have a way to track my mood and accomplishments over time, keep trac
 
 Inspo from [lon by dstn](https://github.com/0xdstn/lon).
 
+* Tracks mood, accomplishments, journal entries, and MIT for next day
+* Saves data in an easy to read plaintext file in the root folder called `~/.track`
+* Integrates with [Tod](https://github.com/milofultz/tod) to pull in completed accomplishments
+* Allows pulling of MIT into [Tod's](https://github.com/milofultz/tod) task list
+
 ### Usage
 
 To reduce the friction of using this every day, I made an alias in my terminal so I can just write `track` to bring up the program and use any options I want following it:
 
-`alias track="python '/Users/your-username/daily_tracker_directory/track.py'"`
+`alias track="python '/Users/your-username/track_directory/track.py'"`
 
 Take the above code and copy it into your `~/.bash_profile` file. After completing this, run `source ~/.bash_profile` for the new changes to be active.
 
@@ -56,7 +61,7 @@ Been listening to vogue ball playlists all night.
 
 ### Future Implementation
 
-* Add Tod integration to README
+* Add Tod integration
 * ~~Using options:~~
     * ~~Return all accomplishments.~~
     * ~~Show average mood over short- and long-term scale.~~
