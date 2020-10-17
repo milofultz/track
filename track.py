@@ -17,7 +17,8 @@ BREAKPOINTS = {
     '!',
     '?'
 }
-FP = str(Path.home()) + '/.track'
+TOD_FP = str(Path.home()) + '/.tod'
+TRACK_FP = str(Path.home()) + '/.track'
 TERMINAL_HEIGHT = get_terminal_size()[1]
 
 
@@ -28,21 +29,32 @@ def cls():
     print('\n'*40)
 
 
-def load_data():
-    """Return entries as a string."""
-    try:
-        with open(FP, 'r') as f:
-            data = f.read()
-        return data
-    except:
-        print(FP + ' file not found.')
-        return None
+def load_data(fp: str):
+    """Return data as a string."""
+    with open(fp, 'r') as f:
+        data = f.read()
+    return data
+
+
+def import_completed_tasks(data: str):
+    """Import completed tasks from .tod file"""
+    completed_tasks = []
+    data = data.split('\n')
+
+    for task in data:
+        if task == '' or task[0] != '[' or task[1] != 'X':
+            continue
+        task_name = task[4:-7]
+        timebox = task[-5:-1]
+        completed_tasks.append(f"{task_name} ({timebox})")
+
+    return completed_tasks
 
 
 def show_help():
     """Print help to screen."""
     print('\n' +
-          'track: Input info for daily tracking:\n'
+          'track: Input info for daily tracking\n'
           '  * Mood\n' +
           '  * Short Daily Summary\n' +
           '  * Accomplishments\n' +
@@ -66,7 +78,7 @@ def show_help():
 
 # Main Functions
 
-def user_entry():
+def user_entry(imported_accs: list = []):
     """Record entry data from user."""
     # Mood
     while True:
@@ -87,7 +99,13 @@ def user_entry():
             break
 
     # Accomplishments
-    accomplishments = []
+    accomplishments = imported_accs
+    if len(accomplishments) > 0:
+        print('')
+        print("Accomplishments from Tod:")
+        for acc in imported_accs:
+            print(f"* {acc}")
+        print('')
     print('Write your accomplishments: ')
     while True:
         new_acc = input('-> ')
@@ -188,7 +206,12 @@ def track(yesterday: bool=False):
     cls()
     if yesterday:
         print('Tracking for yesterday:\n')
-    entry_dic = user_entry()
+    try:
+        tod_data = load_data(TOD_FP)
+        tod_accs = import_completed_tasks(tod_data)
+        entry_dic = user_entry(tod_accs)
+    except FileNotFoundError:
+        entry_dic = user_entry()
     entry = make_entry(entry_dic, yesterday)
     cls()
     record_entry(entry)
@@ -323,13 +346,14 @@ if __name__ == "__main__":
 
     else:
         option = sys.argv[1]
-        data = load_data()
-        if not data:
+        try:
+            data = load_data(TRACK_FP)
+        except FileNotFoundError:
             show_help()
             sys.exit()
 
         # Return random entry
-        elif option == '!':
+        if option == '!':
             cls()
             entries = data.split('---')[1:]
             entry = random.choice(entries).strip()
