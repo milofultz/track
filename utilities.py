@@ -152,7 +152,7 @@ def paint(lst):
         elif re.match('\d{8}', line[:8]):
             lst[i] = (Colors.GREY + line[:8] +
                       Colors.RED + line[8:13] +
-                      Colors.WHITE + line[13:])
+                      Colors.WHITE + line[13:]) + Colors.NORMAL
         elif line[0] == '*':
             lst[i] = Colors.CYAN + line[0] + Colors.NORMAL + line[1:]
         elif line[0] == '>':

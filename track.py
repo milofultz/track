@@ -169,8 +169,8 @@ if __name__ == "__main__":
         elif option == 'overviews':
             cls()
             overviews = get_overviews(data)[-TERMINAL_HEIGHT+2:]
-            print('\n'.join(line for line in overviews),
-                  '\n')
+            print('\n'.join(line for line in paint(overviews)))
+            print('')
 
         elif option == 'y':
             track(yesterday=True)

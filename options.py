@@ -70,7 +70,7 @@ def avg_mood(entries: str):
     # 1w avg
     week_avg = 0
     day_count = 0
-    week_ago_date = now - timedelta(days=7)
+    week_ago_date = now - timedelta(days=6)
     for date, mood in mood_arr[:-7:-1]:
         if datetime.strptime(date, '%Y%m%d') > week_ago_date:
             week_avg += int(mood)
@@ -81,10 +81,10 @@ def avg_mood(entries: str):
           f'{color}{week_avg}{Colors.NORMAL}.')
 
     # 1m avg
-    if total_days > 28:
+    if total_days >= 7:
         month_avg = 0
         day_count = 0
-        month_ago_date = now - timedelta(days=28)
+        month_ago_date = now - timedelta(days=27)
         for date, mood in mood_arr[:-28:-1]:
             if datetime.strptime(date, '%Y%m%d') > month_ago_date:
                 month_avg += int(mood)
@@ -95,10 +95,10 @@ def avg_mood(entries: str):
               f'{color}{month_avg}{Colors.NORMAL}.')
 
     # 1y avg
-    if total_days > 365:
+    if total_days >= 28:
         year_avg = 0
         day_count = 0
-        year_ago_date = now - timedelta(days=365)
+        year_ago_date = now - timedelta(days=364)
         for date, mood in mood_arr[:-365:-1]:
             if datetime.strptime(date, '%Y%m%d') > year_ago_date:
                 year_avg += int(mood)
