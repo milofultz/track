@@ -15,7 +15,7 @@ from utilities import (cls, show_help,
 
 TOD_FP = str(Path.home()) + '/.tod'
 TRACK_FP = str(Path.home()) + '/.track'
-
+OPTIONS = sys.argv[1:]
 
 # Main Functions
 
@@ -60,7 +60,12 @@ def user_entry(imported_accs: list = None):
     while True:
         new_acc = input(Colors.CYAN + '* ' + Colors.NORMAL)
         # if blank entry, move on
-        if new_acc != '':
+        if len(new_acc) > 70:
+            print(Colors.RED +
+                  'Please write less than 70 characters. Try:' +
+                  Colors.NORMAL)
+            print(Colors.WHITE + '* ' + new_acc[0:70] + Colors.NORMAL)
+        elif new_acc != '':
             accomplishments.append(new_acc)
         else:
             break
@@ -110,11 +115,11 @@ def track(yesterday: bool = False):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
+    if not OPTIONS:
         track()
 
     else:
-        option = sys.argv[1]
+        option = OPTIONS[0]
         try:
             data = load_data(TRACK_FP)
         except FileNotFoundError:
@@ -144,12 +149,12 @@ if __name__ == "__main__":
         elif option == 'mit':
             cls()
             mit = get_mit(data)
-            if 'done' in sys.argv:
+            if 'done' in OPTIONS:
                 updated_entries = complete_mit(data, mit)
                 save_data(updated_entries, TRACK_FP)
                 mit = mit + ' (Completed)'
                 print('Entry updated.')
-            if ' (Completed)' in mit or 'done' in sys.argv:
+            if ' (Completed)' in mit or 'done' in OPTIONS:
                 mit = paint(mit)
             print(f'\n> {mit}\n')
 
@@ -176,6 +181,6 @@ if __name__ == "__main__":
             track(yesterday=True)
 
         else:
-            options = " ".join(arg for arg in sys.argv[1:])
+            options = " ".join(arg for arg in OPTIONS[1:])
             print("Unknown option(s): " + options)
             print("Try `track help` for more information.")
