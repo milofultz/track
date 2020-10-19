@@ -17,12 +17,6 @@ class Colors:
     NORMAL = '\033[0m'
 
 
-BREAKPOINTS = {
-    ' ',
-    '.',
-    '!',
-    '?'
-}
 TERMINAL_HEIGHT = get_terminal_size()[1]
 
 
@@ -125,7 +119,7 @@ def format_entry(dic, yesterday: bool = False):
         line = paragraph
         while len(line) > 76:
             edge = 75
-            while line[edge] not in BREAKPOINTS:
+            while line[edge] != ' ':
                 edge -= 1
             long_journal += line[0:edge].strip()
             line = line[edge:]
