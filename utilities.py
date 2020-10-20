@@ -81,8 +81,7 @@ def import_completed_tasks(data: str):
     for task in data:
         if task == '' or task[0] != '[' or task[1] != 'X':
             continue
-        task_name = task[4:-7]
-        completed_tasks.append(f"* {task_name}")
+        completed_tasks.append(task[4:-7])
 
     return completed_tasks
 

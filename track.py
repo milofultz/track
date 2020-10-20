@@ -49,13 +49,13 @@ def user_entry(imported_accs: list = None):
     print('Write your accomplishments:\n')
 
     if imported_accs is not None:
-        accomplishments = imported_accs
+        accomplishments = [acc for acc in imported_accs]
     else:
         accomplishments = []
     if len(accomplishments) > 0:
         print(Colors.BLUE + "Accomplishments from Tod:" + Colors.NORMAL)
-        for acc in paint(imported_accs):
-            print(acc)
+        for acc in imported_accs:
+            print(Colors.CYAN + '* ' + Colors.NORMAL + acc)
 
     while True:
         new_acc = input(Colors.CYAN + '* ' + Colors.NORMAL)
