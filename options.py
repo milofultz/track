@@ -19,7 +19,7 @@ def get_mit(entries: str):
     if entries != '':
         last_data = entries.rsplit('\n> ', 1)
         last_mit, endcap = last_data[1].split('\n', 1)
-        return last_mit
+        return f'> {last_mit}'
     else:
         return 'No recent MIT found.'
 

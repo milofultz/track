@@ -132,16 +132,14 @@ if __name__ == "__main__":
             entries = data.split('---')[1:]
             entry = random.choice(entries).strip()
             entry_lst = [line for line in entry.split('\n')]
-            entry_lst = paint(entry_lst)
-            entry = '\n'.join(line for line in entry_lst)
-            print('\n' + entry + '\n')
+            formatted_entry = paint(entry_lst)
+            print('\n' + formatted_entry + '\n')
 
         elif option == 'accs':
             cls()
             accs_list = get_accs(data)[-TERMINAL_HEIGHT+2:]
-            accs_list = paint(accs_list)
-            print('\n'.join(line for line in accs_list),
-                  '\n')
+            formatted_accs_list = paint(accs_list)
+            print('\n' + formatted_accs_list + '\n')
 
         elif option in 'help':
             show_help()
@@ -155,17 +153,14 @@ if __name__ == "__main__":
                 mit = mit + ' (Completed)'
                 print('Entry updated.')
             if ' (Completed)' in mit or 'done' in OPTIONS:
-                mit = paint(mit)
-            print(f'\n> {mit}\n')
+                formatted_mit = paint( [mit] )
+            print(f'\n{mit}\n')
 
         elif option == 'mits':
             cls()
             mits = get_mits(data)[-TERMINAL_HEIGHT+2:]
-            for index, mit in enumerate(mits):
-                if ' (Completed)' in mit:
-                    mits = paint(mits)
-            print('\n'.join(line for line in mits),
-                  '\n')
+            formatted_mits = paint(mits)
+            print('\n' + formatted_mits + '\n')
 
         elif option == 'mood':
             cls()
@@ -174,8 +169,8 @@ if __name__ == "__main__":
         elif option == 'overviews':
             cls()
             overviews = get_overviews(data)[-TERMINAL_HEIGHT+2:]
-            print('\n'.join(line for line in paint(overviews)))
-            print('')
+            formatted_overviews = paint(overviews)
+            print('\n' + formatted_overviews + '\n')
 
         elif option == 'y':
             track(yesterday=True)

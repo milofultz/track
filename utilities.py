@@ -81,7 +81,7 @@ def import_completed_tasks(data: str):
     for task in data:
         if task == '' or task[0] != '[' or task[1] != 'X':
             continue
-        completed_tasks.append(task[4:-7])
+        completed_tasks.append(f"{task[4:-7]} {task[-6:]}")
 
     return completed_tasks
 
@@ -154,4 +154,4 @@ def paint(lst):
             else:
                 end = line[1:]
             lst[i] = Colors.WHITE + line[0] + Colors.NORMAL + end
-    return lst
+    return '\n'.join(item for item in lst)
