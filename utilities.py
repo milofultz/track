@@ -1,36 +1,20 @@
 from datetime import datetime, timedelta
 import re
-from shutil import get_terminal_size
 
-
-# Constants
-
-class Colors:
-    WHITE = "\033[97m"
-    RED = "\033[91m"
-    YELLOW = "\033[93m"
-    GREEN = "\033[92m"
-    CYAN = "\033[96m"
-    BLUE = '\033[94m'
-    PURPLE = '\033[95m'
-    GREY = '\x1b[90m'
-    NORMAL = '\033[0m'
-
-
-TERMINAL_HEIGHT = get_terminal_size()[1]
+from config import *
 
 
 # Utilities
 
-def cls():
-    """Clear screen with 40 blank lines."""
+def clear_screen():
+    """Clear screen with 40 blank lines"""
     print('\n'*40)
 
 
 def show_help():
-    """Print help to screen."""
-    print('\n' +
-          'track: Input info for daily tracking\n'
+    """Print help to screen"""
+    print('\n' + Colors.BLACK_ON_WHITE +
+          'track: Input info for daily tracking' + Colors.NORMAL + '\n'
           '  * Mood\n' +
           '  * Short Daily Summary\n' +
           '  * Accomplishments\n' +
@@ -52,106 +36,252 @@ def show_help():
           '  y           Record tracking for previous day (if you forget the night before)\n')
 
 
-def load_data(fp):
-    """Return data as a string."""
-    with open(fp, 'r') as f:
+# Getters/Setters
+
+def load_data(filepath):
+    """Return data as a string"""
+    with open(filepath, 'r') as f:
         data = f.read()
     return data
 
 
-def append_data(new_data, fp):
-    """Append entry to tracking file."""
-    with open(fp, 'a') as f:
-        f.write(new_data)
-
-
-def save_data(data, fp):
+def save_data(data, filepath):
+    """Write data to file"""
     if data:
-        with open(fp, 'w') as f:
+        with open(filepath, 'w') as f:
             f.write(data)
     else:
         print('No data provided.')
 
 
-def import_completed_tasks(data: str):
+def append_data(new_data, filepath):
+    """Append entry to file"""
+    with open(filepath, 'a') as f:
+        f.write(new_data)
+
+
+def get_completed_tasks_in_tod():
     """Import completed tasks from .tod file"""
     completed_tasks = []
-    data = data.split('\n')
+    tod_file_data = load_data(Filepaths.TOD)
+    tod_file_data = tod_file_data.split('\n')
 
-    for task in data:
-        if task == '' or task[0] != '[' or task[1] != 'X':
+    for line in tod_file_data:
+        if line == '' or line[0] != '[' or line[1] != 'X':
             continue
-        completed_tasks.append(f"{task[4:-7]} {task[-6:]}")
+        completed_tasks.append(f"{line[4:-7]} {line[-6:]}")
 
     return completed_tasks
 
 
-def format_entry(dic, yesterday: bool = False):
-    """Return formatted entry."""
-    mood = dic.get('mood')
-    accs = dic.get('accomplishments')
-    mit = dic.get('mit')
-    sj = dic.get('short_journal')
-    lj = dic.get('long_journal')
+def get_start_and_end_dates(data):
+    """Return start and end date range of entries"""
+    dates = re.findall('\d{8}', data)
 
-    delimiter = '---'
-    blank_line = ''
-    # if between midnight and 3am or 'y' option used, use prior day's date
+    start_date = datetime.strptime(dates[0], '%Y%m%d')
+    end_date = datetime.strptime(dates[-1], '%Y%m%d')
+
+    return start_date, end_date
+
+
+def get_mood_data(data):
+    """Return mood data from .track file"""
+    matches = re.findall('\d{8} \([1-5]\)', data)
+    dates_and_moods = []
+
+    for match in matches:
+        date, mood = match.split()
+        date = datetime.strptime(date, '%Y%m%d')
+        mood = mood[1]
+        dates_and_moods.append((date, mood))
+
+    return dates_and_moods
+
+
+def get_average_mood(mood_data, past_days=None):
+    """Return average mood from data in range"""
+    mood_sum = 0
+    total_days = 0
+    if past_days is None:
+        past_days = (datetime.now() - datetime(1970, 1, 1)).days
+    start_date = datetime.now() - timedelta(days=past_days-1)
+    for date, mood in mood_data[:-past_days:-1]:
+        if date > start_date:
+            mood_sum += int(mood)
+            total_days += 1
+    return round(mood_sum/total_days, 2)
+
+
+def set_mood():
+    """Return mood from user input"""
+    while True:
+        mood = input(Colors.RED + '#' + Colors.NORMAL + ': ')
+        if len(mood) > 1 or not mood.isdigit():
+            clear_screen()
+            print(Colors.RED + 'Please enter a single digit number.' + Colors.NORMAL)
+        else:
+            print()
+            break
+
+    return mood
+
+
+def set_short_journal():
+    """Return short journal from user input"""
+    print('Summarize your day in less than 50 characters:     ' +
+          Colors.WHITE + '▼' + Colors.NORMAL)
+    while True:
+        short_journal = input(Colors.WHITE + '► ' + Colors.NORMAL)
+        if len(short_journal) > 50:
+            print(Colors.RED +
+                  'Please write less than 50 characters. Try:' +
+                  Colors.NORMAL)
+            print(Colors.WHITE + short_journal[0:50] + Colors.NORMAL)
+        else:
+            print()
+            return short_journal
+
+
+def set_accomplishments(tod_accomplishments):
+    """Return accomplishments from user input"""
+    print('Write your accomplishments:\n')
+
+    if tod_accomplishments is not None and tod_accomplishments != []:
+        accomplishments = [accomplishment for accomplishment in tod_accomplishments]
+        print_tod_accomplishments(accomplishments)
+    else:
+        accomplishments = []
+
+    while True:
+        accomplishment = input(Colors.CYAN + '* ' + Colors.NORMAL)
+        if len(accomplishment) > 70:
+            print(Colors.RED + 'Please write less than 70 characters. Try:')
+            print(Colors.WHITE + '* ' + accomplishment[0:70] + Colors.NORMAL)
+        elif accomplishment != '':
+            accomplishments.append(accomplishment)
+        else:
+            return accomplishments
+
+
+def set_long_journal():
+    """Return long journal from user input"""
+    long_journal = []
+
+    print('Write your long journal entry:\n')
+    while True:
+        paragraph = input('  ')
+        if paragraph != '':
+            long_journal.append(paragraph)
+        else:
+            return long_journal
+
+
+def set_mit():
+    """Return MIT from user input"""
+    print("Tomorrow's most important task: ")
+    while True:
+        mit = input(Colors.WHITE + '> ' + Colors.NORMAL)
+        if not mit or not mit.strip():
+            print("Please enter tomorrow's most important task")
+        else:
+            return mit
+
+
+# Formatting
+
+def format_entry(entry, yesterday: bool = False):
+    """Return formatted entry"""
+    overview_line = create_formatted_overview_line(entry['mood'],
+                                                   entry['short_journal'],
+                                                   yesterday)
+    accomplishment_lines = create_formatted_accomplishments(
+        entry['accomplishments']
+    )
+    mit_line = f"> {entry['mit']}"
+    long_journal = create_formatted_long_journal(entry['long_journal'])
+
+    return ('---' + '\n' +
+            overview_line + '\n\n' +
+            accomplishment_lines + '\n\n' +
+            mit_line + '\n\n' +
+            long_journal + '\n')
+
+
+def create_formatted_overview_line(mood, short_journal, yesterday):
+    """Return formatted overview line"""
     now = datetime.now()
     if yesterday or int(now.strftime('%-H')) < 4:
         now = now - timedelta(days=1)
-    day = now.strftime("%Y%m%d")
-    top_line = f"{day} ({mood}) {sj}"
+    date = now.strftime("%Y%m%d")
+    return f"{date} ({mood}) {short_journal}"
 
-    acc_lines = ''
-    for index, acc in enumerate(accs):
-        acc_lines += f"* {acc}"
-        if index + 1 != len(accs):
-            acc_lines += '\n'
-        else:
-            pass
 
-    mit_line = f"> {mit}"
+def create_formatted_accomplishments(accomplishments):
+    """Return formatted string of accomplishment list"""
+    output = ''
 
-    long_journal = ''
-    for index, paragraph in enumerate(lj):
-        line = paragraph
+    for index, accomplishment in enumerate(accomplishments):
+        output += f"* {accomplishment}"
+        if index + 1 != len(accomplishments):
+            output += '\n'
+
+    return output
+
+
+def create_formatted_long_journal(long_journal):
+    """Return formatted long journal entry"""
+    output = ''
+
+    for index, line in enumerate(long_journal):
         while len(line) > 76:
             edge = 75
             while line[edge] != ' ':
                 edge -= 1
-            long_journal += line[0:edge].strip()
+            output += line[0:edge].strip()
             line = line[edge:]
-            long_journal += '\n'
-        long_journal += line.strip()
-        long_journal += '\n\n'
+            output += '\n'
+        output += line.strip() + '\n\n'
 
-    formatted_entry = (delimiter + '\n' +
-                       top_line + '\n' +
-                       blank_line + '\n' +
-                       acc_lines + '\n' +
-                       blank_line + '\n' +
-                       mit_line + '\n' +
-                       blank_line + '\n' +
-                       long_journal + '\n')
-
-    return formatted_entry
+    return output
 
 
-def paint(lst):
-    for i, line in enumerate(lst):
-        if not line:
+def print_tod_accomplishments(accomplishments):
+    """Print accomplishments from tod file"""
+    print(Colors.BLUE + "Accomplishments from Tod:" + Colors.NORMAL)
+    for accomplishment in accomplishments:
+        print(Colors.CYAN + '* ' + Colors.NORMAL + accomplishment)
+
+
+def paint(lines: list):
+    """Return colored list of items"""
+    for i, line in enumerate(lines):
+        if line == '':
             continue
-        elif re.match('\d{8}', line[:8]):
-            lst[i] = (Colors.GREY + line[:8] +
-                      Colors.RED + line[8:13] +
-                      Colors.WHITE + line[13:]) + Colors.NORMAL
+        if re.match('\d{8}', line[:8]):
+            lines[i] = paint_date(line)
         elif line[0] == '*':
-            lst[i] = Colors.CYAN + line[0] + Colors.NORMAL + line[1:]
+            lines[i] = paint_accomplishment(line)
         elif line[0] == '>':
-            if ' (Completed)' in line:
-                end = line[1:-12] + Colors.GREEN + line[-12:] + Colors.NORMAL
-            else:
-                end = line[1:]
-            lst[i] = Colors.WHITE + line[0] + Colors.NORMAL + end
-    return '\n'.join(item for item in lst)
+            lines[i] = paint_mit(line)
+    return lines
+
+
+def paint_date(line):
+    """Return colored date"""
+    return (Colors.GREY + line[:8] +
+            Colors.RED + line[8:13] +
+            Colors.WHITE + line[13:] + Colors.NORMAL)
+
+
+def paint_accomplishment(line):
+    """Return colored accomplishment"""
+    return Colors.CYAN + line[0] + Colors.NORMAL + line[1:]
+
+
+def paint_mit(line):
+    """Return colored MIT"""
+    if ' (Completed)' in line:
+        end = line[1:-12] + Colors.GREEN + line[-12:] + Colors.NORMAL
+    else:
+        end = line[1:]
+    return Colors.WHITE + line[0] + Colors.NORMAL + end

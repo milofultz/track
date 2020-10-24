@@ -1,10 +1,48 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+import random
 import re
 
-from utilities import Colors
+from config import *
+from utilities import (Colors, clear_screen, append_data, save_data,
+                       set_mood, set_short_journal, set_accomplishments,
+                       set_long_journal, set_mit, get_completed_tasks_in_tod,
+                       format_entry, paint, paint_mit,
+                       get_start_and_end_dates, get_mood_data, get_average_mood)
 
 
-# Options
+def track(yesterday: bool = False):
+    """Run whole tracking sequence."""
+    if yesterday:
+        print(Colors.YELLOW + 'Tracking for yesterday:\n' + Colors.NORMAL)
+    try:
+        tod_accomplishments = get_completed_tasks_in_tod()
+        entry_dic = user_entry(tod_accomplishments)
+    except FileNotFoundError:
+        entry_dic = user_entry()
+    entry = format_entry(entry_dic, yesterday)
+    clear_screen()
+    append_data(entry, Filepaths.TRACK)
+    print('Entry recorded.')
+
+
+def user_entry(imported_accomplishments: list = None):
+    """Record entry data from user."""
+    mood = set_mood()
+    short_journal = set_short_journal()
+    accomplishments = set_accomplishments(imported_accomplishments)
+    long_journal = set_long_journal()
+    mit = set_mit()
+
+    entries = {
+        "mood": mood,
+        "accomplishments": accomplishments,
+        "mit": mit,
+        "short_journal": short_journal,
+        "long_journal": long_journal
+    }
+
+    return entries
+
 
 def get_accs(data):
     """Return recent accomplishments."""
@@ -32,92 +70,52 @@ def get_mits(entries: str):
     return matches
 
 
-def complete_mit(entries: str, mit: str):
-    """Return updated entries with completed MIT."""
-    first_entries, last_entry = entries.rsplit('---', 1)
-    split_entry = last_entry.split('\n')
-    for line in split_entry:
-        # check if already completed
-        if '> ' in line and (' (Completed)' in line or
-                             'No MIT recorded' in line):
-            print('MIT already completed.')
-            return
+def complete_last_mit(data: str):
+    """Update and save entries with completed MIT."""
+    mit = get_mit(data)
+
+    if ' (Completed)' in mit:
+        print('MIT already completed.')
+        return
+
+    first_entries, last_entry = data.rsplit('---', 1)
     last_entry = last_entry.replace(mit, mit + ' (Completed)')
     updated_entries = first_entries + '---' + last_entry
+    save_data(updated_entries, Filepaths.TRACK)
 
-    return updated_entries
+    print('Entry updated.')
 
 
-def avg_mood(entries: str):
+def print_average_mood(data: str):
     """Return mood averages over time."""
-    pattern = re.compile('\d{8} \(\d\)')  # find all dates and mood numbers
-    raw_data = pattern.findall(entries)
-    mood_arr = []
-    for item in raw_data:
-        date, mood = item.split()  # parse data into tuples
-        mood_arr.append((date, mood[1]))
+    start_date, end_date = get_start_and_end_dates(data)
+    total_days = (datetime.now() - start_date).days
 
-    start_date = datetime.strptime(mood_arr[0][0], '%Y%m%d')
-    start_date = start_date.strftime('%B %-d, %Y')
-    end_date = datetime.strptime(mood_arr[-1][0], '%Y%m%d')
-    end_date = end_date.strftime('%B %-d, %Y')
-    print(f'Using the data from {start_date} to {end_date}:\n')
+    formatted_start_date = start_date.strftime('%B %-d, %Y')
+    formatted_end_date = end_date.strftime('%B %-d, %Y')
 
-    # get total time from first entry
-    now = datetime.now()
-    total_days = (now - datetime.strptime(mood_arr[0][0], '%Y%m%d')).days
+    dates_and_moods = get_mood_data(data)
 
-    # 1w avg
-    week_avg = 0
-    day_count = 0
-    week_ago_date = now - timedelta(days=6)
-    for date, mood in mood_arr[:-7:-1]:
-        if datetime.strptime(date, '%Y%m%d') > week_ago_date:
-            week_avg += int(mood)
-            day_count += 1
-    week_avg = round(week_avg/day_count, 2)
-    color = Colors.GREEN if week_avg > 2 else Colors.RED
+    print('Using the data from ' +
+          f'{formatted_start_date} to {formatted_end_date}:\n')
+
+    week_avg = get_average_mood(dates_and_moods, 7)
     print('Your average mood over this week was ' +
-          f'{color}{week_avg}{Colors.NORMAL}.')
+          f'{Colors.WHITE}{week_avg}{Colors.NORMAL}.')
 
-    # 1m avg
     if total_days >= 7:
-        month_avg = 0
-        day_count = 0
-        month_ago_date = now - timedelta(days=27)
-        for date, mood in mood_arr[:-28:-1]:
-            if datetime.strptime(date, '%Y%m%d') > month_ago_date:
-                month_avg += int(mood)
-                day_count += 1
-        month_avg = round(month_avg/day_count, 2)
-        color = Colors.GREEN if month_avg > 2 else Colors.RED
+        month_avg = get_average_mood(dates_and_moods, 28)
         print('Your average mood over this month was ' +
-              f'{color}{month_avg}{Colors.NORMAL}.')
+              f'{Colors.WHITE}{month_avg}{Colors.NORMAL}.')
 
-    # 1y avg
     if total_days >= 28:
-        year_avg = 0
-        day_count = 0
-        year_ago_date = now - timedelta(days=364)
-        for date, mood in mood_arr[:-365:-1]:
-            if datetime.strptime(date, '%Y%m%d') > year_ago_date:
-                year_avg += int(mood)
-                day_count += 1
-        year_avg = round(year_avg/day_count, 2)
-        color = Colors.GREEN if year_avg > 2 else Colors.RED
+        year_avg = get_average_mood(dates_and_moods, 365)
         print('Your average mood over this month was ' +
-              f'{color}{year_avg}{Colors.NORMAL}.')
+              f'{Colors.WHITE}{year_avg}{Colors.NORMAL}.')
 
-    # all time avg
-    total_avg = 0
-    day_count = 0
-    for date, mood in mood_arr:
-        total_avg += int(mood)
-        day_count += 1
-    total_avg = round(total_avg/day_count, 2)
-    color = Colors.GREEN if total_avg > 2 else Colors.RED
+    total_avg = get_average_mood(dates_and_moods, None)
     print('Your average mood overall was ' +
-          f'{color}{total_avg}{Colors.NORMAL}.\n')
+          f'{Colors.WHITE}{total_avg}{Colors.NORMAL}.\n')
 
 
 def get_overviews(data):
@@ -126,3 +124,47 @@ def get_overviews(data):
     matches = re.findall(pattern, data)
 
     return matches
+
+
+def print_random_entry(data):
+    """Print random entry from .track file"""
+    entries = data.split('---')[1:]
+    entry = random.choice(entries).strip()
+    entry_lst = [line for line in entry.split('\n')]
+    formatted_entry = '\n'.join(paint(entry_lst))
+    print('\n' + formatted_entry + '\n')
+
+
+def print_recent_accomplishments(data):
+    """Print recent accomplishments from .track file"""
+    accomplishments = get_accs(data)[-TERMINAL_HEIGHT + 2:]
+    formatted_accomplishments = '\n'.join(paint(accomplishments))
+    print(f'\n{formatted_accomplishments}\n')
+
+
+def print_last_mit(data):
+    """Print last MIT from .track file"""
+    mit = get_mit(data)
+    mit = paint_mit(mit)
+    print(f'\n{mit}\n')
+
+
+def print_recent_mits(data):
+    """Print recent MITs from .track file"""
+    mits = get_mits(data)[-TERMINAL_HEIGHT+2:]
+    formatted_mits = '\n'.join(paint(mits))
+    print(f'\n{formatted_mits}\n')
+
+
+def print_recent_overviews(data):
+    """Print recent overviews from .track file"""
+    overviews = get_overviews(data)[-TERMINAL_HEIGHT+2:]
+    formatted_overviews = '\n'.join(paint(overviews))
+    print(f'\n{formatted_overviews}\n')
+
+
+def print_unknown_options(options):
+    """Print error message if invalid option used"""
+    options = " ".join(arg for arg in options[1:])
+    print("Unknown option(s): " + options)
+    print("Try `track help` for more information.")
