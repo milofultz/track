@@ -69,4 +69,4 @@ Been listening to vogue ball playlists all night.
     * ~~Return yesterday's MIT.~~
     * ~~Pull up random journal entry.~~
 * Eventually maybe turn this into some kind of simple MERN app for practice.
-* Graph mood rating over time using matplotlib.
+* ~~Graph mood rating over time using matplotlib.~~
