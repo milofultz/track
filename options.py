@@ -6,7 +6,7 @@ from config import *
 from utilities import (Colors, clear_screen, append_data, save_data,
                        set_mood, set_short_journal, set_accomplishments,
                        set_long_journal, set_mit, get_completed_tasks_in_tod,
-                       format_entry, paint, paint_mit,
+                       format_entry, paint, paint_mit, print_mood_graph,
                        get_start_and_end_dates, get_mood_data, get_average_mood)
 
 
@@ -96,8 +96,8 @@ def print_average_mood(data: str):
 
     dates_and_moods = get_mood_data(data)
 
-    print('Using the data from ' +
-          f'{formatted_start_date} to {formatted_end_date}:\n')
+    print(Colors.WHITE + 'Using the data from ' +
+          f'{formatted_start_date} to {formatted_end_date}:\n' + Colors.NORMAL)
 
     week_avg = get_average_mood(dates_and_moods, 7)
     print('Your average mood over this week was ' +
@@ -116,6 +116,8 @@ def print_average_mood(data: str):
     total_avg = get_average_mood(dates_and_moods, None)
     print('Your average mood overall was ' +
           f'{Colors.WHITE}{total_avg}{Colors.NORMAL}.\n')
+
+    print_mood_graph(dates_and_moods)
 
 
 def get_overviews(data):

@@ -20,4 +20,4 @@ class Filepaths:
     TRACK = str(Path.home()) + '/.track'
 
 
-TERMINAL_HEIGHT = get_terminal_size()[1]
+TERMINAL_WIDTH, TERMINAL_HEIGHT = get_terminal_size()

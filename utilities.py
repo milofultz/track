@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 import re
 
+from terminalplot import plot
+
 from config import *
 
 
@@ -8,7 +10,7 @@ from config import *
 
 def clear_screen():
     """Clear screen with 40 blank lines"""
-    print('\n'*40)
+    print('\n' * TERMINAL_HEIGHT)
 
 
 def show_help():
@@ -285,3 +287,15 @@ def paint_mit(line):
     else:
         end = line[1:]
     return Colors.WHITE + line[0] + Colors.NORMAL + end
+
+
+def print_mood_graph(dates_and_moods):
+    """Print line graph of mood in terminal"""
+    x = range(len(dates_and_moods))
+    y = [int(i[1]) for i in dates_and_moods]
+    display_rows = 10
+    display_columns = (TERMINAL_WIDTH
+                       if TERMINAL_WIDTH < len(dates_and_moods)
+                       else len(dates_and_moods) * 2)
+    plot(x, y, rows=display_rows, columns=display_columns)
+    print()
