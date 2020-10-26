@@ -71,7 +71,10 @@ def get_completed_tasks_in_tod():
     for line in tod_file_data:
         if line == '' or line[0] != '[' or line[1] != 'X':
             continue
-        completed_tasks.append(f"{line[4:-7]} {line[-6:]}")
+        completed_task = (f"{line[4:-7]} {line[-6:]}"
+                          if line[-6:] != '(0:00)'
+                          else line[4:-7])
+        completed_tasks.append(completed_task)
 
     return completed_tasks
 
