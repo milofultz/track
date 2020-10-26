@@ -55,7 +55,7 @@ Been listening to vogue ball playlists all night.
 * `mit` - Print last recorded most important task.
 * `mit done` - Append ` (Completed)` to MIT in `.track` file
 * `mits` - Print MITs of most recent entries.
-* `mood` - Print average mood using past entries.
+* `mood` - Print graph plot and averages of mood using past entries.
 * `overviews` - Print headers of all recent entries.
 * `y` - Record tracking for previous day (if you forget the night before). 
 
