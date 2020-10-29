@@ -7,7 +7,7 @@ Inspo from [lon by dstn](https://github.com/0xdstn/lon).
 * Tracks mood, accomplishments, journal entries, and MIT for next day
 * Saves data in an easy to read plaintext file in the root folder called `~/.track`
 * Integrates with [Tod](https://github.com/milofultz/tod) to pull in completed accomplishments
-* Allows pulling of MIT into [Tod's](https://github.com/milofultz/tod) task list
+* Allows pulling of MIT into [Tod's](https://github.com/milofultz/tod) task list, as well as automatic marking of MIT as complete based on status in Tod file
 
 ### Usage
 
@@ -70,4 +70,4 @@ Been listening to vogue ball playlists all night.
     * ~~Pull up random journal entry.~~
 * Eventually maybe turn this into some kind of simple MERN app for practice.
 * ~~Graph mood rating over time using matplotlib.~~
-* Add a way to catch a completed MIT from Tod and update it in Track
+* ~~Add a way to catch a completed MIT from Tod and update it in Track~~
