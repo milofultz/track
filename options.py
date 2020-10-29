@@ -152,7 +152,7 @@ def print_last_mit(data):
 def print_recent_mits(data):
     """Print recent MITs from .track file"""
     mits = get_mits(data)[-TERMINAL_HEIGHT+2:]
-    formatted_mits = '\n'.join(paint(f"> {mits}"))
+    formatted_mits = '\n'.join(paint(mits))
     print(f'\n{formatted_mits}\n')
 
 
