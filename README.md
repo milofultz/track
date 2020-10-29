@@ -70,4 +70,4 @@ Been listening to vogue ball playlists all night.
     * ~~Pull up random journal entry.~~
 * Eventually maybe turn this into some kind of simple MERN app for practice.
 * ~~Graph mood rating over time using matplotlib.~~
-* Add a way to catch a completed MIT from Tod and update it in Track
+* ~~Add a way to catch a completed MIT from Tod and update it in Track~~
