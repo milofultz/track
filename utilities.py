@@ -6,8 +6,6 @@ from terminalplot import plot
 from config import *
 
 
-# Utilities
-
 def clear_screen():
     """Clear screen with 40 blank lines"""
     print('\n' * TERMINAL_HEIGHT)
@@ -37,8 +35,6 @@ def show_help():
           '  overviews   Print headers of all recent entries.\n' +
           '  y           Record tracking for previous day (if you forget the night before)\n')
 
-
-# Getters/Setters
 
 def load_data(filepath):
     """Return data as a string"""
@@ -192,8 +188,6 @@ def set_mit():
             return mit
 
 
-# Formatting
-
 def format_entry(entry, yesterday: bool = False):
     """Return formatted entry"""
     overview_line = create_formatted_overview_line(entry['mood'],
@@ -302,3 +296,11 @@ def print_mood_graph(dates_and_moods):
                        else len(dates_and_moods) * 2)
     plot(x, y, rows=display_rows, columns=display_columns)
     print()
+
+
+def is_last_mit_complete_in_tod(last_mit):
+    tod_completed_tasks = get_completed_tasks_in_tod()
+    for task in tod_completed_tasks:
+        if last_mit in task:
+            return True
+    return False

@@ -57,7 +57,7 @@ def get_mit(entries: str):
     if entries != '':
         last_data = entries.rsplit('\n> ', 1)
         last_mit, endcap = last_data[1].split('\n', 1)
-        return f'> {last_mit}'
+        return last_mit
     else:
         return 'No recent MIT found.'
 
@@ -79,11 +79,9 @@ def complete_last_mit(data: str):
         return
 
     first_entries, last_entry = data.rsplit('---', 1)
-    last_entry = last_entry.replace(mit, mit + ' (Completed)')
+    last_entry = last_entry.replace(f"> {mit}", f"> {mit} (Completed)")
     updated_entries = first_entries + '---' + last_entry
     save_data(updated_entries, Filepaths.TRACK)
-
-    print('Entry updated.')
 
 
 def print_average_mood(data: str):
@@ -147,14 +145,14 @@ def print_recent_accomplishments(data):
 def print_last_mit(data):
     """Print last MIT from .track file"""
     mit = get_mit(data)
-    mit = paint_mit(mit)
+    mit = paint_mit(f"> {mit}")
     print(f'\n{mit}\n')
 
 
 def print_recent_mits(data):
     """Print recent MITs from .track file"""
     mits = get_mits(data)[-TERMINAL_HEIGHT+2:]
-    formatted_mits = '\n'.join(paint(mits))
+    formatted_mits = '\n'.join(paint(f"> {mits}"))
     print(f'\n{formatted_mits}\n')
 
 
