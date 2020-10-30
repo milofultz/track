@@ -7,7 +7,8 @@ from utilities import (Colors, clear_screen, append_data, save_data,
                        set_mood, set_short_journal, set_accomplishments,
                        set_long_journal, set_mit, get_completed_tasks_in_tod,
                        format_entry, paint, paint_mit, print_mood_graph,
-                       get_start_and_end_dates, get_mood_data, get_average_mood)
+                       get_start_and_end_dates, get_mood_data, get_average_mood,
+                       show_help)
 
 
 def track(yesterday: bool = False):
@@ -165,6 +166,6 @@ def print_recent_overviews(data):
 
 def print_unknown_options(options):
     """Print error message if invalid option used"""
-    options = " ".join(arg for arg in options[1:])
+    show_help()
+    options = " ".join(arg for arg in options)
     print("Unknown option(s): " + options)
-    print("Try `track help` for more information.")

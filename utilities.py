@@ -25,6 +25,7 @@ def show_help():
           '\n' +
           'Options:\n' +
           '  [none]      Input and record daily tracking\n' +
+          '  y           Input and record tracking for previous day\n' +
           '  !           Print random daily entry\n' +
           '  accs        Print all recent accomplishments\n' +
           '  help        Print this help menu\n' +
@@ -32,8 +33,7 @@ def show_help():
           '  mit done    Record last MIT as completed\n' +
           '  mits        Print MITs of most recent entries\n' +
           '  mood        Print average mood using past entries\n' +
-          '  overviews   Print headers of all recent entries.\n' +
-          '  y           Record tracking for previous day (if you forget the night before)\n')
+          '  overviews   Print headers of all recent entries.\n')
 
 
 def load_data(filepath):
