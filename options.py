@@ -13,6 +13,7 @@ from utilities import (Colors, clear_screen, append_data, save_data,
 
 def track(yesterday: bool = False):
     """Run whole tracking sequence."""
+    print(Colors.BLUE + '   TRACK  ' + Colors.NORMAL + '\n')
     if yesterday:
         print(Colors.YELLOW + 'Tracking for yesterday:\n' + Colors.NORMAL)
     try:
