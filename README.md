@@ -11,11 +11,21 @@ Inspo from [lon by dstn](https://github.com/0xdstn/lon).
 
 ### Usage
 
+The filepaths for both the Track file (and the [Tod](https://github.com/milofultz/tod) file if you use 
+[Tod](https://github.com/milofultz/tod)) should both be in a `.env` file in the root directory of the program. 
+The `.env` should use these exact variable names with `{filepath}` being replaced by your desired filepath:
+
+    TRACK_FP={filepath}
+    TOD_FP={filepath}
+
+---
+
 To reduce the friction of using this every day, I made an alias in my terminal so I can just write `track` to bring up the program and use any options I want following it:
 
 `alias track="python '/Users/your-username/track_directory/track.py'"`
 
 Take the above code and copy it into your `~/.bash_profile` file. After completing this, run `source ~/.bash_profile` for the new changes to be active.
+
 
 ##### No options:
 
