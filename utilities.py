@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import os
 import re
 
 from terminalplot import plot
@@ -58,10 +59,18 @@ def append_data(new_data, filepath):
         f.write(new_data)
 
 
+def set_env_variables():
+    env_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env')
+    env_data = load_data(env_path)
+    for line in env_data.split('\n'):
+        k, v = line.split('=', 1)
+        os.environ[k] = v
+
+
 def get_completed_tasks_in_tod():
     """Import completed tasks from .tod file"""
     completed_tasks = []
-    tod_file_data = load_data(Filepaths.TOD)
+    tod_file_data = load_data(os.getenv('TOD_FP'))
     tod_file_data = tod_file_data.split('\n')
 
     for line in tod_file_data:

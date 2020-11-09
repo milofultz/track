@@ -1,19 +1,20 @@
+import os
 import sys
 
-from config import *
 from options import (track, get_mit, complete_last_mit, print_random_entry,
                      print_recent_accomplishments, print_last_mit,
                      print_recent_mits, print_average_mood,
                      print_recent_overviews, print_unknown_options)
-from utilities import (clear_screen, load_data, show_help, 
-                       is_last_mit_complete_in_tod)
+from utilities import (clear_screen, load_data, show_help,
+                       set_env_variables, is_last_mit_complete_in_tod)
 
 
 if __name__ == "__main__":
+    set_env_variables()
     options = sys.argv[1:]
     clear_screen()
     try:
-        data = load_data(Filepaths.TRACK)
+        data = load_data(os.getenv('TRACK_FP'))
     except FileNotFoundError:
         show_help()
         sys.exit()

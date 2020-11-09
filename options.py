@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 import random
 import re
 
@@ -23,7 +24,7 @@ def track(yesterday: bool = False):
         entry_dic = user_entry()
     entry = format_entry(entry_dic, yesterday)
     clear_screen()
-    append_data(entry, Filepaths.TRACK)
+    append_data(entry, os.getenv('TRACK_FP'))
     print('Entry recorded.')
 
 
@@ -83,7 +84,7 @@ def complete_last_mit(data: str):
     first_entries, last_entry = data.rsplit('---', 1)
     last_entry = last_entry.replace(f"> {mit}", f"> {mit} (Completed)")
     updated_entries = first_entries + '---' + last_entry
-    save_data(updated_entries, Filepaths.TRACK)
+    save_data(updated_entries, os.getenv('TRACK_FP'))
 
 
 def print_average_mood(data: str):
