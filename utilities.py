@@ -86,7 +86,7 @@ def get_completed_tasks_in_tod():
 
 def get_start_and_end_dates(data):
     """Return start and end date range of entries"""
-    dates = re.findall('\d{8}', data)
+    dates = re.findall(r'\d{8}', data)
 
     start_date = datetime.strptime(dates[0], '%Y%m%d')
     end_date = datetime.strptime(dates[-1], '%Y%m%d')
@@ -96,7 +96,7 @@ def get_start_and_end_dates(data):
 
 def get_mood_data(data):
     """Return mood data from .track file"""
-    matches = re.findall('\d{8} \([1-5]\)', data)
+    matches = re.findall(r'\d{8} \([1-5]\)', data)
     dates_and_moods = []
 
     for match in matches:
@@ -252,7 +252,7 @@ def paint(lines: list):
     for i, line in enumerate(lines):
         if line == '':
             continue
-        if re.match('\d{8}', line[:8]):
+        if re.match(r'\d{8}', line[:8]):
             lines[i] = paint_date(line)
         elif line[0] == '*':
             lines[i] = paint_accomplishment(line)

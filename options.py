@@ -4,7 +4,7 @@ import random
 import re
 
 from config import *
-from utilities import (Colors, clear_screen, append_data, save_data,
+from utilities import (Colors, clear_screen, append_data,
                        set_mood, set_short_journal, set_accomplishments,
                        set_long_journal, get_completed_tasks_in_tod,
                        format_entry, paint, print_mood_graph,
@@ -47,7 +47,7 @@ def user_entry(imported_accomplishments: list = None):
 
 def get_accs(data):
     """Return recent accomplishments."""
-    pattern = re.compile('(?<=\n)\* .*')
+    pattern = re.compile(r'(?<=\n)\* .*')
     matches = re.findall(pattern, data)
 
     return matches
@@ -89,7 +89,7 @@ def print_average_mood(data: str):
 
 def get_overviews(data):
     """Return recent entry overviews."""
-    pattern = re.compile('\d{8} \(\d\) .*')
+    pattern = re.compile(r'\d{8} \(\d\) .*')
     matches = re.findall(pattern, data)
 
     return matches
