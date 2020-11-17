@@ -4,10 +4,9 @@ I wanted to have a way to track my mood and accomplishments over time, keep trac
 
 Inspo from [lon by dstn](https://github.com/0xdstn/lon).
 
-* Tracks mood, accomplishments, journal entries, and MIT for next day
+* Tracks mood, accomplishments, and journal entries
 * Saves data in an easy to read plaintext file in the root folder called `~/.track`
 * Integrates with [Tod](https://github.com/milofultz/tod) to pull in completed accomplishments
-* Allows pulling of MIT into [Tod's](https://github.com/milofultz/tod) task list, as well as automatic marking of MIT as complete based on status in Tod file
 
 ### Usage
 
@@ -62,9 +61,6 @@ Been listening to vogue ball playlists all night.
 * `!` - Print random daily entry.
 * `accs` - Print accomplishments of most recent entries.
 * `help` - Print help for program.
-* `mit` - Print last recorded most important task.
-* `mit done` - Append ` (Completed)` to MIT in `.track` file
-* `mits` - Print MITs of most recent entries.
 * `mood` - Print graph plot and averages of mood using past entries.
 * `overviews` - Print headers of all recent entries.
 * `y` - Record tracking for previous day (if you forget the night before). 
@@ -76,8 +72,6 @@ Been listening to vogue ball playlists all night.
     * ~~Return all accomplishments.~~
     * ~~Show average mood over short- and long-term scale.~~
     * ~~Return all headers in a list.~~
-    * ~~Return yesterday's MIT.~~
     * ~~Pull up random journal entry.~~
 * Eventually maybe turn this into some kind of simple MERN app for practice.
 * ~~Graph mood rating over time using matplotlib.~~
-* ~~Add a way to catch a completed MIT from Tod and update it in Track~~
