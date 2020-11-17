@@ -6,8 +6,8 @@ import re
 from config import *
 from utilities import (Colors, clear_screen, append_data, save_data,
                        set_mood, set_short_journal, set_accomplishments,
-                       set_long_journal, set_mit, get_completed_tasks_in_tod,
-                       format_entry, paint, paint_mit, print_mood_graph,
+                       set_long_journal, get_completed_tasks_in_tod,
+                       format_entry, paint, print_mood_graph,
                        get_start_and_end_dates, get_mood_data, get_average_mood,
                        show_help)
 
@@ -34,12 +34,10 @@ def user_entry(imported_accomplishments: list = None):
     short_journal = set_short_journal()
     accomplishments = set_accomplishments(imported_accomplishments)
     long_journal = set_long_journal()
-    mit = set_mit()
 
     entries = {
         "mood": mood,
         "accomplishments": accomplishments,
-        "mit": mit,
         "short_journal": short_journal,
         "long_journal": long_journal
     }
@@ -53,38 +51,6 @@ def get_accs(data):
     matches = re.findall(pattern, data)
 
     return matches
-
-
-def get_mit(entries: str):
-    """Return MIT from last tracked data."""
-    if entries != '':
-        last_data = entries.rsplit('\n> ', 1)
-        last_mit, endcap = last_data[1].split('\n', 1)
-        return last_mit
-    else:
-        return 'No recent MIT found.'
-
-
-def get_mits(entries: str):
-    """Return recent MITs."""
-    pattern = re.compile('(?<=\n)> .*')
-    matches = re.findall(pattern, entries)
-
-    return matches
-
-
-def complete_last_mit(data: str):
-    """Update and save entries with completed MIT."""
-    mit = get_mit(data)
-
-    if ' (Completed)' in mit:
-        print('MIT already completed.')
-        return
-
-    first_entries, last_entry = data.rsplit('---', 1)
-    last_entry = last_entry.replace(f"> {mit}", f"> {mit} (Completed)")
-    updated_entries = first_entries + '---' + last_entry
-    save_data(updated_entries, os.getenv('TRACK_FP'))
 
 
 def print_average_mood(data: str):
@@ -143,20 +109,6 @@ def print_recent_accomplishments(data):
     accomplishments = get_accs(data)[-TERMINAL_HEIGHT + 2:]
     formatted_accomplishments = '\n'.join(paint(accomplishments))
     print(f'\n{formatted_accomplishments}\n')
-
-
-def print_last_mit(data):
-    """Print last MIT from .track file"""
-    mit = get_mit(data)
-    mit = paint_mit(f"> {mit}")
-    print(f'\n{mit}\n')
-
-
-def print_recent_mits(data):
-    """Print recent MITs from .track file"""
-    mits = get_mits(data)[-TERMINAL_HEIGHT+2:]
-    formatted_mits = '\n'.join(paint(mits))
-    print(f'\n{formatted_mits}\n')
 
 
 def print_recent_overviews(data):

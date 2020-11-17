@@ -1,12 +1,9 @@
 import os
 import sys
 
-from options import (track, get_mit, complete_last_mit, print_random_entry,
-                     print_recent_accomplishments, print_last_mit,
-                     print_recent_mits, print_average_mood,
-                     print_recent_overviews, print_unknown_options)
-from utilities import (clear_screen, load_data, show_help,
-                       set_env_variables, is_last_mit_complete_in_tod)
+from options import (track, print_random_entry, print_recent_accomplishments,
+                     print_average_mood, print_recent_overviews, print_unknown_options)
+from utilities import clear_screen, load_data, show_help, set_env_variables
 
 
 if __name__ == "__main__":
@@ -20,9 +17,6 @@ if __name__ == "__main__":
         sys.exit()
 
     if not options:
-        mit = get_mit(data)
-        if is_last_mit_complete_in_tod(mit):
-            complete_last_mit(data)
         track()
 
     else:
@@ -34,22 +28,11 @@ if __name__ == "__main__":
             print_recent_accomplishments(data)
         elif option in 'help':
             show_help()
-        elif option == 'mit':
-            if 'done' in options:
-                complete_last_mit(data)
-                print('Entry updated.')
-            else:
-                print_last_mit(data)
-        elif option == 'mits':
-            print_recent_mits(data)
         elif option == 'mood':
             print_average_mood(data)
         elif option == 'overviews':
             print_recent_overviews(data)
         elif option == 'y':
-            mit = get_mit(data)
-            if is_last_mit_complete_in_tod(mit):
-                complete_last_mit(data)
             track(yesterday=True)
         else:
             print_unknown_options(options)

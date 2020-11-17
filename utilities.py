@@ -30,9 +30,6 @@ def show_help():
           '  !           Print random daily entry\n' +
           '  accs        Print all recent accomplishments\n' +
           '  help        Print this help menu\n' +
-          '  mit         Print last recorded MIT\n' +
-          '  mit done    Record last MIT as completed\n' +
-          '  mits        Print MITs of most recent entries\n' +
           '  mood        Print average mood using past entries\n' +
           '  overviews   Print headers of all recent entries.\n')
 
@@ -69,8 +66,11 @@ def set_env_variables():
 
 def get_completed_tasks_in_tod():
     """Import completed tasks from .tod file"""
+    try:
+        tod_file_data = load_data(os.getenv('TOD_FP'))
+    except FileNotFoundError:
+        return []
     completed_tasks = []
-    tod_file_data = load_data(os.getenv('TOD_FP'))
     tod_file_data = tod_file_data.split('\n')
 
     for line in tod_file_data:
@@ -186,17 +186,6 @@ def set_long_journal():
             return long_journal
 
 
-def set_mit():
-    """Return MIT from user input"""
-    print("Tomorrow's most important task: ")
-    while True:
-        mit = input(Colors.WHITE + '> ' + Colors.NORMAL)
-        if not mit or not mit.strip():
-            print("Please enter tomorrow's most important task")
-        else:
-            return mit
-
-
 def format_entry(entry, yesterday: bool = False):
     """Return formatted entry"""
     overview_line = create_formatted_overview_line(entry['mood'],
@@ -205,13 +194,11 @@ def format_entry(entry, yesterday: bool = False):
     accomplishment_lines = create_formatted_accomplishments(
         entry['accomplishments']
     )
-    mit_line = f"> {entry['mit']}"
     long_journal = create_formatted_long_journal(entry['long_journal'])
 
     return ('---' + '\n' +
             overview_line + '\n\n' +
             accomplishment_lines + '\n\n' +
-            mit_line + '\n\n' +
             long_journal + '\n')
 
 
@@ -269,8 +256,6 @@ def paint(lines: list):
             lines[i] = paint_date(line)
         elif line[0] == '*':
             lines[i] = paint_accomplishment(line)
-        elif line[0] == '>':
-            lines[i] = paint_mit(line)
     return lines
 
 
@@ -286,15 +271,6 @@ def paint_accomplishment(line):
     return Colors.CYAN + line[0] + Colors.NORMAL + line[1:]
 
 
-def paint_mit(line):
-    """Return colored MIT"""
-    if ' (Completed)' in line:
-        end = line[1:-12] + Colors.GREEN + line[-12:] + Colors.NORMAL
-    else:
-        end = line[1:]
-    return Colors.WHITE + line[0] + Colors.NORMAL + end
-
-
 def print_mood_graph(dates_and_moods):
     """Print line graph of mood in terminal"""
     x = range(len(dates_and_moods))
@@ -305,11 +281,3 @@ def print_mood_graph(dates_and_moods):
                        else len(dates_and_moods) * 2)
     plot(x, y, rows=display_rows, columns=display_columns)
     print()
-
-
-def is_last_mit_complete_in_tod(last_mit):
-    tod_completed_tasks = get_completed_tasks_in_tod()
-    for task in tod_completed_tasks:
-        if last_mit in task:
-            return True
-    return False
