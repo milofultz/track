@@ -2,7 +2,8 @@ import os
 import sys
 
 from options import (track, print_random_entry, print_recent_accomplishments,
-                     print_average_mood, print_recent_overviews, print_unknown_options)
+                     print_average_mood, print_recent_overviews, print_unknown_options,
+                     add_to_journal)
 from utilities import clear_screen, load_data, show_help, set_env_variables
 
 
@@ -26,6 +27,8 @@ if __name__ == "__main__":
             print_random_entry(data)
         elif option == 'accs':
             print_recent_accomplishments(data)
+        elif option == 'add':
+            add_to_journal()
         elif option in 'help':
             show_help()
         elif option == 'mood':

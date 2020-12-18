@@ -9,7 +9,7 @@ from utilities import (Colors, clear_screen, append_data,
                        set_long_journal, get_completed_tasks_in_tod,
                        format_entry, paint, print_mood_graph,
                        get_start_and_end_dates, get_mood_data, get_average_mood,
-                       show_help)
+                       show_help, create_formatted_long_journal)
 
 
 def track(yesterday: bool = False):
@@ -123,3 +123,11 @@ def print_unknown_options(options):
     show_help()
     options = " ".join(arg for arg in options)
     print("Unknown option(s): " + options)
+
+
+def add_to_journal():
+    date = datetime.now().strftime("%Y%m%d %H:%M")
+    additional = create_formatted_long_journal(set_long_journal())
+    append_data(f"\n---\n{date} Note\n\n{additional}",
+                os.getenv('TRACK_FP'))
+    print("Note added.")
