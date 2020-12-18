@@ -60,18 +60,8 @@ Been listening to vogue ball playlists all night.
 
 * `!` - Print random daily entry.
 * `accs` - Print accomplishments of most recent entries.
+* `add` - Add timestamped note to journal.
 * `help` - Print help for program.
 * `mood` - Print graph plot and averages of mood using past entries.
 * `overviews` - Print headers of all recent entries.
-* `y` - Record tracking for previous day (if you forget the night before). 
-
-### Future Implementation
-
-* ~~Add Tod integration~~
-* ~~Using options:~~
-    * ~~Return all accomplishments.~~
-    * ~~Show average mood over short- and long-term scale.~~
-    * ~~Return all headers in a list.~~
-    * ~~Pull up random journal entry.~~
-* Eventually maybe turn this into some kind of simple MERN app for practice.
-* ~~Graph mood rating over time using matplotlib.~~
+* `y` - Record tracking for previous day (if you forget the night before).
